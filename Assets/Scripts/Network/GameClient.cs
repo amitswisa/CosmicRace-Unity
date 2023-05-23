@@ -184,7 +184,7 @@ public class GameClient : IDisposable
                 {
                     Debug.Log("Starting Game...");
                     await Task.Delay(1000); // Delay before scene transition
-                    await UnityMainThreadDispatcher.Instance().EnqueueAsync(() =>
+                    await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
                         GameController.Instance.SetMatchStarted();
                         SceneManager.LoadSceneAsync("MainScene", LoadSceneMode.Single);

@@ -154,7 +154,7 @@ public class GameController : MonoBehaviour
     {
         GameClient.Instance.Disconnect();
 
-        UnityMainThreadDispatcher.Instance().EnqueueAsync(() => {
+        UnityMainThreadDispatcher.Instance.EnqueueAsync(() => {
             SceneManager.LoadScene("HomeScene", LoadSceneMode.Single);
 
             if(this.m_IsQuit) 

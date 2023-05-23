@@ -27,15 +27,61 @@ using System.Threading.Tasks;
 /// </summary>
 public class UnityMainThreadDispatcher : MonoBehaviour {
 
-	private static readonly Queue<Action> _executionQueue = new Queue<Action>();
+    private static readonly Queue<Action> _executionQueue = new Queue<Action>();
 
-	public void Update() {
-		lock(_executionQueue) {
-			while (_executionQueue.Count > 0) {
-				_executionQueue.Dequeue().Invoke();
-			}
-		}
-	}
+    private static UnityMainThreadDispatcher _instance = null;
+
+    public static UnityMainThreadDispatcher Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                // Look for existing instance
+                _instance = FindObjectOfType<UnityMainThreadDispatcher>();
+
+                // Create new instance if one doesn't already exist
+                if (_instance == null)
+                {
+                    // Create new GameObject and add our single-instance component
+                    GameObject singletonObject = new GameObject();
+                    _instance = singletonObject.AddComponent<UnityMainThreadDispatcher>();
+                    DontDestroyOnLoad(singletonObject);
+
+                    // Give it a suitable name
+                    singletonObject.name = typeof(UnityMainThreadDispatcher).ToString() + " (Singleton)";
+                }
+            }
+            
+            return _instance;
+        }
+    }
+
+	void Awake()
+    {
+        // If an instance of this component exists, but it isn't this instance, destroy it
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            // This instance is the singleton instance
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+    }
+
+	public void Update()
+    {
+        lock (_executionQueue)
+        {
+            while (_executionQueue.Count > 0)
+            {
+                _executionQueue.Dequeue().Invoke();
+            }
+        }
+    }
 
 	/// <summary>
 	/// Locks the queue and adds the IEnumerator to the queue
@@ -90,37 +136,8 @@ public class UnityMainThreadDispatcher : MonoBehaviour {
 	}
 
 
-	private static UnityMainThreadDispatcher _instance = null;
-
 	public static bool Exists() {
 		return _instance != null;
 	}
-
-	public static UnityMainThreadDispatcher Instance() {
-		if (!Exists ()) {
-			throw new Exception ("UnityMainThreadDispatcher could not find the UnityMainThreadDispatcher object. Please ensure you have added the MainThreadExecutor Prefab to your scene.");
-		}
-		return _instance;
-	}
-
-
-	void Awake()
-	{
-		if (_instance == null)
-		{
-			_instance = this;
-			DontDestroyOnLoad(this.gameObject);
-		}
-		else
-		{
-			// If an instance already exists, destroy the duplicate
-			Destroy(this.gameObject);
-		}
-	}
-
-	void OnDestroy() {
-			_instance = null;
-	}
-
 
 }
