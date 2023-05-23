@@ -114,7 +114,7 @@ public class GameController : MonoBehaviour
         
         this.SendMessageToServer(quitCommand.ToJson()+"\n");
         
-        this.Disconnect();
+        this.Disconnect("You have quit the match, no progress made during this match will be saved.");
     }
 
     public void InitiateRivals()
@@ -164,7 +164,7 @@ public class GameController : MonoBehaviour
         this.RivalsData = i_RivalsData;
     }
 
-    public void Disconnect()
+    public void Disconnect(String i_Message = "")
     {
         GameClient.Instance.Disconnect();
         
@@ -174,11 +174,16 @@ public class GameController : MonoBehaviour
                 SceneManager.LoadScene("HomeScene", LoadSceneMode.Single);
 
                 if(this.m_IsQuit)
-                    OKDialogManager.Instance.ShowDialog("Error", "You quit the game, no progress has been saved.");
+                    OKDialogManager.Instance.ShowDialog("Match Quit", i_Message);
                 else
-                    OKDialogManager.Instance.ShowDialog("Notification", "Match ended due to some reason.");
+                    OKDialogManager.Instance.ShowDialog("Match Terminated", i_Message);
             });
         }
+    }
+
+    public void EndMatch()
+    {
+
     }
 
     private void OnApplicationQuit()

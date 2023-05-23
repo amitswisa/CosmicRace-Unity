@@ -76,7 +76,7 @@ public class GameClient : IDisposable
                 if (stream != null)
                 {
                     await stream.WriteAsync(data, 0, data.Length);
-                    Debug.Log("Message sent to server: " + message);
+                    //Debug.Log("Message sent to server: " + message);
                 }
                 else
                 {
@@ -167,12 +167,12 @@ public class GameClient : IDisposable
                 if (content.Trim().Equals("isAlive"))
                 {
                     await SendMessageToServer("ALIVE\n");
-                    Debug.Log("Answered server validation check.");
+                    Debug.Log("Server validation check - SUCCESS!");
                 }
                 else if (content.Trim().Equals("READY?"))
                 {
-                    Debug.Log("Server asking if ready.");
                     await SendMessageToServer("READY\n");
+                    Debug.Log("Server is ready to start the game");
                 }
                 break;
 
@@ -183,7 +183,7 @@ public class GameClient : IDisposable
             case "ACTION":
                 if (content.Trim().Equals("START"))
                 {
-                    Debug.Log("Received start command");
+                    Debug.Log("Starting Game...");
                     await Task.Delay(1000); // Delay before scene transition
                     await UnityMainThreadDispatcher.Instance().EnqueueAsync(() =>
                     {
@@ -192,9 +192,18 @@ public class GameClient : IDisposable
                     });
                 }
                 break;
+            
             case "DATA":
                 JObject resJsonData = JObject.Parse(content);
                 GameController.Instance.UpdateRivalesData(resJsonData);
+                break;
+            
+            case "MATCH_TERMINATION":
+                GameController.Instance.Disconnect(content);
+                break;
+
+            case "MATCH_ENDED":
+                GameController.Instance.EndMatch();
                 break;
         }
     }
