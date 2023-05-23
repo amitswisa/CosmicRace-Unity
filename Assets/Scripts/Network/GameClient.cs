@@ -17,10 +17,11 @@ public class GameClient : IDisposable
     private byte[] receiveBuffer;
     private StringBuilder receivedData = new StringBuilder();
     private ConcurrentQueue<string> messages = new ConcurrentQueue<string>();
-    private ConcurrentQueue<string> messageQueue = new ConcurrentQueue<string>();
     private CancellationTokenSource cancellationTokenSource;
     public event Action<string> OnMessageReceived;
     private bool IsConnected => socket != null && socket.Connected;
+    private Task processMessagesTask;
+    private Task receiveDataTask;
 
     private GameClient()
     {
@@ -53,10 +54,8 @@ public class GameClient : IDisposable
             await SendMessageToServer(jsonData);
 
             // Start the message processor
-            _ = ProcessMessagesAsync();
-
-            // Start receiving data from the server
-            _ = ReceiveDataAsync();
+            processMessagesTask = ProcessMessagesAsync();
+            receiveDataTask = ReceiveDataAsync();
         }
         catch (Exception e)
         {
@@ -248,19 +247,31 @@ public class GameClient : IDisposable
         }
     }
 
-    public void Dispose()
+    public async void Dispose()
     {
+        cancellationTokenSource?.Cancel();
+
+        if (processMessagesTask != null && receiveDataTask != null)
+        {
+            await Task.WhenAll(processMessagesTask, receiveDataTask);
+        }
+
         OnMessageReceived = null;
 
-        cancellationTokenSource?.Cancel();
         cancellationTokenSource?.Dispose();
         cancellationTokenSource = null;
+
+        receivedData.Clear();
+        messages.Clear();
 
         stream?.Close();
         stream = null;
 
         socket?.Close();
         socket = null;
+
+        processMessagesTask = null;
+        receiveDataTask = null;
     }
 
     public void Disconnect()

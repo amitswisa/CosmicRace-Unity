@@ -61,13 +61,11 @@ public class GameController : MonoBehaviour
     
     void Start()
     {
-        this.m_IsQuit = false;
+        this.m_MatchIdentifier = "";
+        this.RivalsData = null;
         this.m_IsMatchStarted = false;
-        // try {
-        //     this.m_ClientUpdatesPanel.SetActive(false);
-        // } catch(Exception e) {
-        //     Debug.Log("Update panel destroyed");
-        // }
+        this.m_IsGameRunning = false;
+        this.m_Rivals = null;
 
         GameObject[] rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
 
@@ -80,23 +78,11 @@ public class GameController : MonoBehaviour
         {
             Debug.LogError("Rival prefab not found in Resources folder.");
         }
-        
-        this.m_IsGameRunning = false;
     }
     
     public async void Connect()
     {
-        // this.m_ClientUpdatesPanel.SetActive(true);
-        
-        // updatePanelScript = m_ClientUpdatesPanel.GetComponent<StartGameUpdating>();
-        // if(updatePanelScript != null)
-        // {
-        //     GameClient.Instance.OnMessageReceived += updatePanelScript.UpdatePanelText;
-        //     await GameClient.Instance.Connect();
-        // }
-
-         await GameClient.Instance.Connect();
-
+        await GameClient.Instance.Connect();
     }
     
     public void SendMessageToServer(string message)
@@ -167,23 +153,34 @@ public class GameController : MonoBehaviour
     public void Disconnect(String i_Message = "")
     {
         GameClient.Instance.Disconnect();
-        
-        if(this.m_IsMatchStarted)
-        {
-            UnityMainThreadDispatcher.Instance().EnqueueAsync(() => {
-                SceneManager.LoadScene("HomeScene", LoadSceneMode.Single);
 
-                if(this.m_IsQuit)
-                    OKDialogManager.Instance.ShowDialog("Match Quit", i_Message);
-                else
-                    OKDialogManager.Instance.ShowDialog("Match Terminated", i_Message);
-            });
-        }
+        UnityMainThreadDispatcher.Instance().EnqueueAsync(() => {
+            SceneManager.LoadScene("HomeScene", LoadSceneMode.Single);
+
+            if(this.m_IsQuit) 
+            {
+                OKDialogManager.Instance.ShowDialog("Match Quit", i_Message);
+            }
+            else
+                OKDialogManager.Instance.ShowDialog("Match Terminated", i_Message);
+        });
+
+        resetGameControllerSettings();
     }
 
     public void EndMatch()
     {
 
+    }
+
+    private void resetGameControllerSettings()
+    {
+        this.m_MatchIdentifier = "";
+        this.RivalsData = null;
+        this.m_IsMatchStarted = false;
+        this.m_IsGameRunning = false;
+        this.m_Rivals = null;
+        this.m_IsQuit = false;
     }
 
     private void OnApplicationQuit()

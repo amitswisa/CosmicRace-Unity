@@ -104,10 +104,17 @@ public class UnityMainThreadDispatcher : MonoBehaviour {
 	}
 
 
-	void Awake() {
-		if (_instance == null) {
+	void Awake()
+	{
+		if (_instance == null)
+		{
 			_instance = this;
 			DontDestroyOnLoad(this.gameObject);
+		}
+		else
+		{
+			// If an instance already exists, destroy the duplicate
+			Destroy(this.gameObject);
 		}
 	}
 
