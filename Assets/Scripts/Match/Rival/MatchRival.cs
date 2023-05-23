@@ -22,7 +22,7 @@ public sealed class MatchRival
             this.m_Position = this.m_rivalInstance.GetComponent<Transform>();
             this.m_RivalMovement = this.m_rivalInstance.GetComponent<RivalMovement>();
             this.m_RivalCharacterDefinitions = this.m_rivalInstance.GetComponent<RivalCharacter>();
-            this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId);
+            this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId+1);
         }
         catch (Exception e)
         {

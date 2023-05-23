@@ -100,7 +100,9 @@ public class PlayerMovement : MonoBehaviour
         {
             PlayerCommand updateLocationCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                 ,PlayerCommand.PlayerAction.UPDATE_LOCATION, new Location(getX(), getY()));
+                
             GameClient.Instance.SendMessageToServer(updateLocationCommand.ToJson()  + "\n");
+
             lastLocationSend = getCurrentTimeInMilliseconds();
             Debug.Log("UpdateLoctionAtServerTask triggered!");
         }

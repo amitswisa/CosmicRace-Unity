@@ -202,7 +202,6 @@ public class GameClient : IDisposable
     private void HandlePlayerCommand(string command)
     {
         PlayerCommand playerCommand = JsonConvert.DeserializeObject<PlayerCommand>(command);
-        Debug.Log(playerCommand.m_Username + " " + playerCommand.m_Action);
 
         switch (playerCommand.m_Action)
         {
