@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -174,6 +175,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private Transform respawnPoint = null;
+    private String playerName = "";
 
     public void OnCollisionEnter2D(Collision2D col)
     {
@@ -191,10 +193,11 @@ public class PlayerMovement : MonoBehaviour
 
             // Send death notification.
             PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
-                    , PlayerCommand.PlayerAction.DEATH, new Location(respawnPoint.position.x, respawnPoint.position.y));
+                , PlayerCommand.PlayerAction.DEATH, new Location(respawnPoint.position.x, respawnPoint.position.y));
             GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
             Debug.Log("Death trigger sent!");
-            
+            playerName = GetComponentInChildren<TextMeshPro>().text;
+            GetComponentInChildren<TextMeshPro>().SetText("");
             _animator.SetTrigger("death");
             GetComponent<Transform>().transform.position = respawnPoint.position;
         }
@@ -204,6 +207,8 @@ public class PlayerMovement : MonoBehaviour
     {
         respawnPoint = null;
         _animator.ResetTrigger("death");
+        GetComponentInChildren<TextMeshPro>().SetText(playerName);
+        playerName = "";
         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         _animator.Play("Idle", 0,0f);
     }

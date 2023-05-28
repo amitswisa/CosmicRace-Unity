@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,9 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource typeSound;
     [SerializeField] private Image soundSettingsBtn;
 
+    private bool _isMute = false;
+    
+
     void Awake() 
     {
         if(Instance == null)
@@ -23,31 +27,79 @@ public class SoundManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    public void MuteGame(float volume)
+    
+    private void Start()
     {
-        if(backgroundSound.volume > 0)
+        _isMute = false;
+    }
+    
+
+    public void changeVolume(float volume)
+    {
+        backgroundSound.volume = volume;
+        buttonSound.volume = volume;
+        typeSound.volume = volume;
+    }
+
+    public void Mute()
+    {
+        backgroundSound.mute = true;
+        buttonSound.mute = true;
+        typeSound.mute = true;
+    }
+
+    public void unMute()
+    {
+        backgroundSound.mute = false;
+        buttonSound.mute = false;
+        typeSound.mute = false;
+    }
+
+    public void toggleMute()
+    {
+        _isMute = !_isMute;
+        if (_isMute)
         {
-            backgroundSound.volume = 0f;
-            buttonSound.volume = 0f;
-            typeSound.volume = 0f;
-        } else {
-            backgroundSound.volume = 1f;
-            buttonSound.volume = 1f;
-            typeSound.volume = 1f;
+            Mute();
         }
-        
+        else
+        {
+            unMute();
+        }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public bool isMuted()
     {
-        
+        return _isMute;
+    }
+    
+    public void toggleMute(String name, bool isMute)
+    {
+        switch (name)
+        {
+            case "Background":
+                backgroundSound.mute = isMute;
+                break;
+            case "click":
+                buttonSound.mute = typeSound.mute = isMute;
+                break;
+        }
+
+        _isMute = backgroundSound.mute && buttonSound.mute && typeSound.mute;
     }
 
-    // Update is called once per frame
-    void Update()
+    public bool isMute(String name)
     {
-        
+        switch (name)
+        {
+            case "Background":
+                return backgroundSound.mute;
+            case "click":
+                return buttonSound.mute && typeSound.mute;
+        }
+
+        return false;
     }
+
+
 }
