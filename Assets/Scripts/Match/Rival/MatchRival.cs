@@ -10,21 +10,21 @@ public sealed class MatchRival
     public GameObject m_rivalInstance { get; set; }
     private RivalMovement m_RivalMovement;
     private Transform m_Position;
-    public bool m_IsActivePlayer {get; private set;}
     private RivalCharacter m_RivalCharacterDefinitions;
     public MatchRival(string i_Username, GameObject i_Object, int i_CharacterId)
     {
         this.m_Username = i_Username;
         this.m_rivalInstance = i_Object;
         this.mCharacterId = i_CharacterId;
-        this.m_IsActivePlayer = true;
 
         try
         {
             this.m_Position = this.m_rivalInstance.GetComponent<Transform>();
             this.m_RivalMovement = this.m_rivalInstance.GetComponent<RivalMovement>();
             this.m_RivalCharacterDefinitions = this.m_rivalInstance.GetComponent<RivalCharacter>();
-            this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId-1);
+            this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId+1);
+
+            this.m_rivalInstance.GetComponent<PlayerData>().playerName = m_Username;
         }
         catch (Exception e)
         {
@@ -67,7 +67,6 @@ public sealed class MatchRival
         // Instance still exists
         if(m_rivalInstance != null)
         {
-            this.m_IsActivePlayer = false;
             GameObject.Destroy(m_rivalInstance);
             Debug.Log("Player " + this.m_Username + " has quit the match.");
         }

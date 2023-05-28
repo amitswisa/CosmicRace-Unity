@@ -151,7 +151,7 @@ public class GameClient : IDisposable
         }
         catch (Exception e)
         {
-            Debug.LogError($"Error while handling message: {e.Message}");
+            //Debug.LogError($"Error while handling message: {e.Message}");
         }
     }
 
