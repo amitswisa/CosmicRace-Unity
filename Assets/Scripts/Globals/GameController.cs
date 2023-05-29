@@ -123,7 +123,7 @@ public class GameController : MonoBehaviour
                 
                 // Convert CharacterData to JObject
                 JObject characterData = JObject.Parse((string)player.Value["CharacterData"]);
-                int characterID = (int)characterData["characterID"];
+                int characterID = ((int)characterData["characterID"]) -1;
 
                 MatchRival matchRival = new MatchRival(playerName, newRival, characterID);
                 this.m_Rivals.Add(playerName, matchRival);

@@ -1,7 +1,5 @@
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
-using static PlayerCommand;
 
 public sealed class MatchRival
 {
@@ -13,24 +11,18 @@ public sealed class MatchRival
     private RivalCharacter m_RivalCharacterDefinitions;
     public MatchRival(string i_Username, GameObject i_Object, int i_CharacterId)
     {
+        Debug.Log("Rival name:" + i_Username);
         this.m_Username = i_Username;
         this.m_rivalInstance = i_Object;
         this.mCharacterId = i_CharacterId;
-
-        try
-        {
-            this.m_Position = this.m_rivalInstance.GetComponent<Transform>();
-            this.m_RivalMovement = this.m_rivalInstance.GetComponent<RivalMovement>();
-            this.m_RivalCharacterDefinitions = this.m_rivalInstance.GetComponent<RivalCharacter>();
-            this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId+1);
-
-            this.m_rivalInstance.GetComponent<PlayerData>().playerName = m_Username;
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e.Message);
-        }
-
+        
+        this.m_Position = this.m_rivalInstance.GetComponent<Transform>();
+        this.m_RivalMovement = this.m_rivalInstance.GetComponent<RivalMovement>();
+        this.m_RivalCharacterDefinitions = this.m_rivalInstance.GetComponent<RivalCharacter>();
+        this.m_rivalInstance.GetComponent<PlayerData>().playerName = m_Username;
+        this.m_rivalInstance.GetComponent<PlayerData>()._selected_charecter = i_CharacterId;
+        
+        this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId);
     }
 
     public void PerformJump(PlayerCommand command)

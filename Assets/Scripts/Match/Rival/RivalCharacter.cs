@@ -38,7 +38,7 @@ public class RivalCharacter : MonoBehaviour
     private int characterID;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         this.animator = GetComponent<Animator>();
     }

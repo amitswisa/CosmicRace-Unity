@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -42,6 +43,7 @@ public class RivalMovement : MonoBehaviour
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _animator = gameObject.GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        GetComponentInChildren<TextMeshPro>().SetText(GetComponent<PlayerData>().playerName);
     }
 
     // Update is called once per frame
@@ -144,19 +146,20 @@ public class RivalMovement : MonoBehaviour
         Debug.Log("PowerUp Off!");
 
     }
-    private Transform respawnPoint = null;
 
     public void TriggerDeath(Location location)
     {
         m_MovementLock = true;
         _dirX = 0;
         _rigidbody2D.bodyType = RigidbodyType2D.Static;
+        GetComponentInChildren<TextMeshPro>().SetText("");
         _animator.SetTrigger("death");
         
     }
     public void RestartLevel()
     {        
         _animator.ResetTrigger("death");
+        GetComponentInChildren<TextMeshPro>().SetText(GetComponent<PlayerData>().playerName);
         Debug.Log("Is Dynamic Now");
         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         _animator.Play("Idle", 0,0f);

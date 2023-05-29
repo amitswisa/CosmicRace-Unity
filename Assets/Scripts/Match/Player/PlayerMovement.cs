@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerCommand command;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if (instance != null && instance != this)
         {
@@ -45,6 +45,8 @@ public class PlayerMovement : MonoBehaviour
         this.command = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                     , PlayerCommand.PlayerAction.IDLE, new Location(getX(), getY()));
         this.lastLocationSend = getCurrentTimeInMilliseconds();
+        GetComponent<PlayerData>()._selected_charecter = PlayerPrefs.GetInt("SelectedCharacter", 0);
+        GetComponentInChildren<TextMeshPro>().SetText(User.getUsername());
     }
 
     void Update() 
@@ -105,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
             GameClient.Instance.SendMessageToServer(updateLocationCommand.ToJson()  + "\n");
 
             lastLocationSend = getCurrentTimeInMilliseconds();
-            Debug.Log("UpdateLoctionAtServerTask triggered!");
+            Debug.Log("UpdateLocationAtServerTask triggered!");
         }
     }
 
@@ -175,7 +177,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private Transform respawnPoint = null;
-    private String playerName = "";
 
     public void OnCollisionEnter2D(Collision2D col)
     {
@@ -185,7 +186,6 @@ public class PlayerMovement : MonoBehaviour
             exp -= 35;
             exp = exp < 0 ? 0 : exp;
             GetComponent<PlayerData>().exp = exp;
-            
             _rigidbody2D.bodyType = RigidbodyType2D.Static;
             ResetIsSpecialPowerOn();
             
@@ -195,20 +195,21 @@ public class PlayerMovement : MonoBehaviour
             PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                 , PlayerCommand.PlayerAction.DEATH, new Location(respawnPoint.position.x, respawnPoint.position.y));
             GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
+            Debug.Log("Current Command: " + currentCommand.ToJson());
             Debug.Log("Death trigger sent!");
-            playerName = GetComponentInChildren<TextMeshPro>().text;
             GetComponentInChildren<TextMeshPro>().SetText("");
             _animator.SetTrigger("death");
             GetComponent<Transform>().transform.position = respawnPoint.position;
+            respawnPoint = null;
+            Debug.Log("for user: "+ User.getUsername()+"the for player is Name: "+  GetComponentInChildren<TextMeshPro>().text);
         }
     }
 
     private void RestartLevel()
     {
-        respawnPoint = null;
         _animator.ResetTrigger("death");
-        GetComponentInChildren<TextMeshPro>().SetText(playerName);
-        playerName = "";
+        GetComponentInChildren<TextMeshPro>().SetText(User.getUsername());
+        Debug.Log("Name: "+  GetComponentInChildren<TextMeshPro>().text);
         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         _animator.Play("Idle", 0,0f);
     }

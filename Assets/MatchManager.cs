@@ -8,11 +8,7 @@ public class MatchManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        try  {
-            GameController.Instance.InitiateRivals();
-        } catch(Exception e) {
-            Debug.Log(e.Message);
-        }
+        GameController.Instance.InitiateRivals();
     }
 
     // Update is called once per frame
