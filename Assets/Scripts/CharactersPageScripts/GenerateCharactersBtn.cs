@@ -20,16 +20,18 @@ public class GenerateCharactersBtn : MonoBehaviour
         
         foreach(Character character in charactersList)
         {
+            int characterID = character.characterId - 1;
+
             newBtn = Instantiate(characterTemplate, transform);
             newBtn.GetComponentInChildren<TMP_Text>().text = character.c_Name;
 
             // Load image file as texture
-            Texture2D texture = LoadImageFile(Utils.CHARACTERS_IMAGES_BASIC_PATH + character.characterId + ".png");
+            Texture2D[] texture = Resources.LoadAll<Texture2D>("Prefabs/Match_Fabs/Main Characters/Idle_Images");
 
             // Create sprite from texture
             Sprite sprite = Sprite.Create(
-                texture, 
-                new Rect(0, 0, texture.width, texture.height),
+                texture[characterID], 
+                new Rect(0, 0, texture[characterID].width, texture[characterID].height),
                 new Vector2(0.5f, 0.5f)
             );
                 
