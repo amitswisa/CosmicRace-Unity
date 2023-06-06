@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
     public bool m_IsGameRunning = false;
     public bool m_IsMatchStarted {get; private set;}
     public bool m_IsQuit {get; set;}
+    public bool m_IsPlayerFinished {get; set;}
     public JObject RivalsData {get; private set;}
     public Dictionary<string, MatchRival> m_Rivals {get; private set;}
     private static GameController instance; // Singleton instance
@@ -65,6 +66,7 @@ public class GameController : MonoBehaviour
         this.RivalsData = null;
         this.m_IsMatchStarted = false;
         this.m_IsGameRunning = false;
+        this.m_IsPlayerFinished = false;
         this.m_Rivals = null;
 
         GameObject[] rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
@@ -189,5 +191,11 @@ public class GameController : MonoBehaviour
         {
             GameClient.Instance.Disconnect();
         }
+    }
+
+    internal void MatchCompleted(string i_MatchCompleteMessage)
+    {
+        this.m_IsPlayerFinished = true;
+        GameClient.Instance.SendMessageToServer(i_MatchCompleteMessage);
     }
 }

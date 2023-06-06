@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static PlayerCommand;
 
 public class FinishPoint : MonoBehaviour
 {
@@ -19,13 +20,13 @@ public class FinishPoint : MonoBehaviour
         {
             finishSound.Play();
             levelCompleted = true;
-            Invoke(nameof(CompleteLevel), 2f);
-        }
-    }
+            
+            PlayerCommand completeLevelCommand
+                        = new PlayerCommand(MessageType.COMMAND, User.getUsername()
+                                , PlayerAction.COMPLETE_LEVEL, new Location(col.gameObject.transform.position.x,
+                                         col.gameObject.transform.position.y));
 
-    private void CompleteLevel()
-    {
-        SceneManager.LoadScene("FinishScene", LoadSceneMode.Single);
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            GameController.Instance.MatchCompleted(completeLevelCommand.ToJson()+"\n");
+        }
     }
 }

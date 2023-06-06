@@ -19,7 +19,6 @@ public class StartGameUpdating : MonoBehaviour
                 UpdatePanel.text += "\n";
 
             UpdatePanel.text += message;
-        }        
+        }
     }
-
 }

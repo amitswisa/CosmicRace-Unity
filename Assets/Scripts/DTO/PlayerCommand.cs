@@ -14,6 +14,7 @@ public sealed class PlayerCommand
         public const string UPDATE_LOCATION = "UPDATE_LOCATION";
         public const string COIN_COLLECT = "COIN_COLLECT";
         public const string RIVAL_QUIT = "RIVAL_QUIT";
+        public const string COMPLETE_LEVEL = "COMPLETE_LEVEL";
         public const string QUIT = "QUIT";
     }
 

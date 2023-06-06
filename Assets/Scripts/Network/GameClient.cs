@@ -201,6 +201,13 @@ public class GameClient : IDisposable
                 GameController.Instance.Disconnect(content);
                 break;
 
+            case "COMPLETE_MATCH":
+                    await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
+                    {
+                        OKDialogManager.Instance.ShowDialog("Match Finish!", content);
+                    });
+                break;
+
             case "MATCH_ENDED":
                 GameController.Instance.EndMatch();
                 break;
