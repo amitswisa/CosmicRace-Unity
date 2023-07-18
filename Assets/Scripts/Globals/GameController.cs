@@ -8,7 +8,6 @@ using static PlayerCommand;
 
 public class GameController : MonoBehaviour
 {
-    //[SerializeField] GameObject m_ClientUpdatesPanel;
     private StartGameUpdating updatePanelScript;
     private GameObject m_RivalPrefab;
     private string m_MatchIdentifier;

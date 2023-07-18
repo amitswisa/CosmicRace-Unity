@@ -48,6 +48,10 @@ public class GameClient : IDisposable
 
             stream = socket.GetStream();
 
+            string gameType = "Online";
+            string initGameDataJson = "{\"gameType\": " + gameType + "}\n";
+            await SendMessageToServer(initGameDataJson);
+
             // Send JSON data after connecting
             int characterId = PlayerPrefs.GetInt("SelectedCharacter", 0) + 1;
             string jsonData = "{\"userid\": " + User.getUserId() + ", \"characterId\": " + characterId + "}\n";
