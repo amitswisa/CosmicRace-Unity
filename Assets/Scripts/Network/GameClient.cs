@@ -25,11 +25,12 @@ public class GameClient : IDisposable
 
     private GameClient()
     {
+
     }
 
     public static GameClient Instance { get; } = new GameClient();
 
-    public async Task Connect()
+    public async Task Connect(bool i_IsFiendMode)
     {
         if (IsConnected)
             return;
@@ -48,14 +49,14 @@ public class GameClient : IDisposable
 
             stream = socket.GetStream();
 
-            string gameType = "Online";
-            string initGameDataJson = "{\"gameType\": " + gameType + "}\n";
-            await SendMessageToServer(initGameDataJson);
-
-            // Send JSON data after connecting
-            int characterId = PlayerPrefs.GetInt("SelectedCharacter", 0) + 1;
-            string jsonData = "{\"userid\": " + User.getUserId() + ", \"characterId\": " + characterId + "}\n";
-            await SendMessageToServer(jsonData);
+            if(i_IsFiendMode)
+            {
+                startFriendModeConnection();
+            }
+            else
+            {
+                startOnlineMatchConnection();
+            }
 
             // Start the message processor
             processMessagesTask = ProcessMessagesAsync();
@@ -67,6 +68,25 @@ public class GameClient : IDisposable
             Debug.LogError($"{e.Message}");
             Dispose();
         }
+    }
+
+    private async void startFriendModeConnection()
+    {
+        string gameType = "Offline";
+        string initGameDataJson = "{\"gameType\": " + gameType + "}\n";
+        await SendMessageToServer(initGameDataJson);
+    }
+
+    private async void startOnlineMatchConnection()
+    {
+        string gameType = "Online";
+        string initGameDataJson = "{\"gameType\": " + gameType + "}\n";
+        await SendMessageToServer(initGameDataJson);
+
+        // Send JSON data after connecting
+        int characterId = PlayerPrefs.GetInt("SelectedCharacter", 0) + 1;
+        string jsonData = "{\"userid\": " + User.getUserId() + ", \"characterId\": " + characterId + "}\n";
+        await SendMessageToServer(jsonData);
     }
 
     public async Task SendMessageToServer(string message)
@@ -155,7 +175,7 @@ public class GameClient : IDisposable
         }
         catch (Exception e)
         {
-            //Debug.LogError($"Error while handling message: {e.Message}");
+            Debug.LogError($"Error while handling message: {e.Message}");
         }
     }
 
@@ -209,6 +229,16 @@ public class GameClient : IDisposable
                     await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
                         OKDialogManager.Instance.ShowDialog("Match Finish!", content);
+                    });
+                break;
+
+            case "ROOM_CREATED":
+                GameController.Instance.SetMatchIdentifier(content);
+                Debug.Log("Room created: " + content);
+                
+                await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
+                    {
+                        SceneManager.LoadSceneAsync("FriendModeWaitingScene", LoadSceneMode.Single);
                     });
                 break;
 
@@ -283,6 +313,11 @@ public class GameClient : IDisposable
 
         processMessagesTask = null;
         receiveDataTask = null;
+    }
+
+    public bool IsConnectionAlive()
+    {
+        return this.IsConnected;
     }
 
     public void Disconnect()

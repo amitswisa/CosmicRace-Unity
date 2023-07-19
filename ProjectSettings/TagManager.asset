@@ -9,6 +9,9 @@ TagManager:
   - Respawn Point
   - Rival
   - WorldSpaceCanvas
+  - Text
+  - Image
+  - pageTitle
   layers:
   - Default
   - TransparentFX

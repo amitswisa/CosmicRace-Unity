@@ -8,6 +8,7 @@ using static PlayerCommand;
 
 public class GameController : MonoBehaviour
 {
+    public bool m_IsFriendMode {get; private set;}
     private StartGameUpdating updatePanelScript;
     private GameObject m_RivalPrefab;
     private string m_MatchIdentifier;
@@ -66,6 +67,7 @@ public class GameController : MonoBehaviour
         this.m_IsMatchStarted = false;
         this.m_IsGameRunning = false;
         this.m_IsPlayerFinished = false;
+        this.m_IsFriendMode = false;
         this.m_Rivals = null;
 
         GameObject[] rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
@@ -83,9 +85,16 @@ public class GameController : MonoBehaviour
     
     public async void Connect()
     {
-        await GameClient.Instance.Connect();
+        this.m_IsFriendMode = false;
+        await GameClient.Instance.Connect(m_IsFriendMode);
     }
     
+    public async void ConnectInFriendMode()
+    {
+        this.m_IsFriendMode = true;
+        await GameClient.Instance.Connect(m_IsFriendMode);
+    }
+
     public void SendMessageToServer(string message)
     {
         GameClient.Instance.SendMessageToServer(message);
@@ -180,6 +189,7 @@ public class GameController : MonoBehaviour
         this.RivalsData = null;
         this.m_IsMatchStarted = false;
         this.m_IsGameRunning = false;
+        this.m_IsFriendMode = false;
         this.m_Rivals = null;
         this.m_IsQuit = false;
     }
@@ -192,9 +202,24 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public bool IsConnected()
+    {
+        return GameClient.Instance.IsConnectionAlive();
+    }
+
+    public void SetMatchIdentifier(string i_MatchIdentifier)
+    {
+        this.m_MatchIdentifier = i_MatchIdentifier;
+    }
+
     internal void MatchCompleted(string i_MatchCompleteMessage)
     {
         this.m_IsPlayerFinished = true;
         GameClient.Instance.SendMessageToServer(i_MatchCompleteMessage);
+    }
+
+    internal string GetMatchIdentifier()
+    {
+        return this.m_MatchIdentifier;
     }
 }

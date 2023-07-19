@@ -25,12 +25,12 @@ public class Menu : MonoBehaviour
 
     public void OnClickOnlineGame()
     {
-        SceneManager.LoadScene("CharacterSelectScene");
+        SceneManager.LoadScene("OnlineMatchScene");
     }
 
     public void OnClickCustomRoomBtn()
     {
-        SceneManager.LoadScene("RoomScene");
+        SceneManager.LoadScene("OfflineModeScene");
     }
 
     public void Logout()
