@@ -29,6 +29,8 @@ public class GameClient : IDisposable
     }
 
     public static GameClient Instance { get; } = new GameClient();
+    public Action<string> OnPlayerJoined { get; internal set; }
+    public Action<string> OnPlayerLeft { get; internal set; }
 
     public async Task Connect(bool i_IsFiendMode)
     {
@@ -242,6 +244,11 @@ public class GameClient : IDisposable
                     });
                 break;
 
+            case "PLAYER_JOINED":
+                Debug.Log("Player joined: " + content);
+                OnPlayerJoined?.Invoke(content);
+                break;
+
             case "MATCH_ENDED":
                 GameController.Instance.EndMatch();
                 break;
@@ -279,7 +286,14 @@ public class GameClient : IDisposable
                 break;
 
             case PlayerAction.RIVAL_QUIT:
-                GameController.Instance.m_Rivals[playerCommand.m_Username].Quit(playerCommand);
+                Debug.Log(playerCommand.m_Username + "quited the match.");
+                
+                if(GameController.Instance.m_IsMatchStarted)
+                    GameController.Instance.m_Rivals[playerCommand.m_Username].Quit(playerCommand);
+                
+                if(GameController.Instance.m_IsFriendMode && !GameController.Instance.m_IsMatchStarted)
+                    OnPlayerLeft?.Invoke(playerCommand.m_Username);
+
                 break;
 
             default:
