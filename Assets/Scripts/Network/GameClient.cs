@@ -213,7 +213,7 @@ public class GameClient : IDisposable
                     await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
                         GameController.Instance.SetMatchStarted();
-                        SceneManager.LoadSceneAsync("MainScene", LoadSceneMode.Single);
+                        SceneManager.LoadSceneAsync("MatchScene", LoadSceneMode.Single);
                     });
                 }
                 break;

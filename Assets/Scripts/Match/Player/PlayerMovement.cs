@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -37,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
         {
             instance = this;
         }
+        
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _animator = GetComponent<Animator>();
@@ -44,8 +42,11 @@ public class PlayerMovement : MonoBehaviour
 
         this.command = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                     , PlayerCommand.PlayerAction.IDLE, new Location(getX(), getY()));
+
         this.lastLocationSend = getCurrentTimeInMilliseconds();
+
         GetComponent<PlayerData>()._selected_charecter = PlayerPrefs.GetInt("SelectedCharacter", 0);
+
         GetComponentInChildren<TextMeshPro>().SetText(User.getUsername());
     }
 
@@ -99,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateLoctionAtServerTask()
     {
-        if(isLocationUpdateRequired())
+        if(isLocationUpdateRequired() && !GameController.Instance.m_IsFriendMode)
         {
             PlayerCommand updateLocationCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                 ,PlayerCommand.PlayerAction.UPDATE_LOCATION, new Location(getX(), getY()));
@@ -194,13 +195,20 @@ public class PlayerMovement : MonoBehaviour
             // Send death notification.
             PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                 , PlayerCommand.PlayerAction.DEATH, new Location(respawnPoint.position.x, respawnPoint.position.y));
+
             GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
+
             Debug.Log("Current Command: " + currentCommand.ToJson());
             Debug.Log("Death trigger sent!");
+
             GetComponentInChildren<TextMeshPro>().SetText("");
+
             _animator.SetTrigger("death");
+
             GetComponent<Transform>().transform.position = respawnPoint.position;
+
             respawnPoint = null;
+            
             Debug.Log("for user: "+ User.getUsername()+"the for player is Name: "+  GetComponentInChildren<TextMeshPro>().text);
         }
     }

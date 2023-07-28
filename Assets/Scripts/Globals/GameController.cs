@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour
     public bool m_IsPlayerFinished {get; set;}
     public JObject RivalsData {get; private set;}
     public Dictionary<string, MatchRival> m_Rivals {get; private set;}
+    public GameObject[] rivalPrefabs;
     private static GameController instance; // Singleton instance
     public static GameController Instance // Public instance property
     {
@@ -70,17 +71,7 @@ public class GameController : MonoBehaviour
         this.m_IsFriendMode = false;
         this.m_Rivals = null;
 
-        GameObject[] rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
-
-        if (rivalPrefabs.Length > 0)
-        {
-            m_RivalPrefab = rivalPrefabs[0];
-            Debug.Log("Rival prefab loaded successfully.");
-        }
-        else
-        {
-            Debug.LogError("Rival prefab not found in Resources folder.");
-        }
+       rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
     }
     
     public async void Connect()
@@ -125,15 +116,15 @@ public class GameController : MonoBehaviour
             
             if(!playerName.Equals(User.getUsername()))
             {
-
                 if(this.m_Rivals == null)
                     this.m_Rivals = new Dictionary<string, MatchRival>();
 
-                GameObject newRival = Instantiate(m_RivalPrefab);
-                
                 // Convert CharacterData to JObject
                 JObject characterData = JObject.Parse((string)player.Value["CharacterData"]);
-                int characterID = ((int)characterData["characterID"]) -1;
+                int characterID = ((int)characterData["characterID"]) - 1;
+
+                m_RivalPrefab = rivalPrefabs[characterID];
+                GameObject newRival = Instantiate(m_RivalPrefab);
 
                 MatchRival matchRival = new MatchRival(playerName, newRival, characterID);
                 this.m_Rivals.Add(playerName, matchRival);

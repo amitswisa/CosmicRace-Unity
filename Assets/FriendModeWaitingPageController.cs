@@ -59,7 +59,7 @@ public class FriendModeWaitingPageController : MonoBehaviour
         for (int i = 0; i < m_WaitingPlayers.Count; i++)
         {
             GameObject newItem = Instantiate(itemPrefab, contentPanel);
-            newItem.GetComponent<TextMeshProUGUI>().text = (i+1).ToString() + ". " + m_WaitingPlayers[i] + '\n';
+            newItem.GetComponent<TextMeshProUGUI>().text = (i+1).ToString() + ". " + m_WaitingPlayers[i] + "\n";
         }
     }
 
@@ -71,7 +71,7 @@ public class FriendModeWaitingPageController : MonoBehaviour
             return;
         }
 
-        GameController.Instance.SendMessageToServer("START");
+        GameController.Instance.SendMessageToServer("START\n");
     }
 
     public void AddWaitingPlayer(string playerName)

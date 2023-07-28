@@ -66,6 +66,11 @@ public sealed class MatchRival
 
     public void PositionCorrection(PlayerCommand playerCommand)
     {
+        if(GameController.Instance.m_IsFriendMode)
+        {
+            return;
+        }
+
         float getInstancePositionX = this.m_Position.position.x;
         float getInstancePositionY = this.m_Position.position.y;
 
