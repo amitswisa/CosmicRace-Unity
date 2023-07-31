@@ -137,12 +137,18 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            if(!command.isEqual(PlayerCommand.PlayerAction.IDLE))
+            try
             {
-                currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
-                    , PlayerCommand.PlayerAction.IDLE, new Location(getX(), getY()));
+                if (!command.isEqual(PlayerCommand.PlayerAction.IDLE))
+                {
+                    currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
+                        , PlayerCommand.PlayerAction.IDLE, new Location(getX(), getY()));
+                }
             }
-            
+            catch (Exception e)
+            {
+            }
+
             state = MovementState.idle;
         }
 
