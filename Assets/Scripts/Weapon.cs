@@ -26,12 +26,12 @@ namespace DefaultNamespace
             float rotZ;
             if (!_spriteRenderer.flipY)
             {
-                rotZ = Mathf.Max(-45, Mathf.Min(45, angle));
+                rotZ = 0;//Mathf.Max(-45, Mathf.Min(45, angle));
             }
             else
             {
-                angle = 0 <= angle ? angle : angle + 360; 
-                rotZ = Mathf.Max(135, Mathf.Min(225, angle));
+                // angle = 0 <= angle ? angle : angle + 360;
+                rotZ = 180;//Mathf.Max(135, Mathf.Min(225, angle));
             }
             
             transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
@@ -43,6 +43,10 @@ namespace DefaultNamespace
                     var p = Instantiate(projectile, shotPoint.position, transform.rotation).GetComponent<Projectile>();
                     p.isRight = !_spriteRenderer.flipY;
                     timeBtwShots = startTimeBtwShots;
+                    p.id = Guid.NewGuid().ToString();
+                    p.owner = User.getUsername();
+                    GameController.Instance.m_projectiles.Add(p.id, p);
+                    GameController.Instance.NewBullet(p.id, User.getUsername(), shotPoint.position, p.isRight);
                 }
             }
             else

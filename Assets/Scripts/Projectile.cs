@@ -10,6 +10,8 @@ namespace DefaultNamespace
         public float distance;
         public LayerMask whatIsSolid;
         public bool isRight = false;
+        public string id;
+        public string owner;
 
         private void Start()
         {
@@ -22,11 +24,11 @@ namespace DefaultNamespace
             RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, transform.right, distance, whatIsSolid);
             if (hitInfo.collider != null)
             {
-                if (hitInfo.collider.CompareTag("Rival"))
+                if (owner != User.getUsername() && hitInfo.collider.CompareTag("Player"))
                 {
                     try
                     {
-                        hitInfo.collider.GetComponent<MatchRival>().DeathByProjectile();
+                        hitInfo.collider.GetComponent<PlayerMovement>().DeathByProjectile(id);
                     }
                     catch (Exception e)
                     {
@@ -44,11 +46,20 @@ namespace DefaultNamespace
             {
                 transform.Translate(-transform.right * speed * Time.deltaTime);
             }
-            
+
+            if (owner == User.getUsername())
+            {
+                GameController.Instance.UpdateBullet(id, transform.position);
+            }
         }
 
         void DestroyProjectile()
         {
+            if (owner == User.getUsername())
+            {
+                GameController.Instance.DestroyBullet(id);
+            }
+
             Destroy(gameObject);
         }
     }

@@ -91,11 +91,4 @@ public sealed class MatchRival
         Location location = new Location(m_Position.position.x, m_Position.position.y);
         return location;
     }
-    
-    public void DeathByProjectile()
-    {
-        PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, m_Username
-            , PlayerCommand.PlayerAction.DEATH, new Location(m_Position.position.x, m_Position.position.y));
-        GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
-    }
 }
