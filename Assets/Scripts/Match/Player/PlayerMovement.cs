@@ -137,12 +137,18 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            if(!command.isEqual(PlayerCommand.PlayerAction.IDLE))
+            try
             {
-                currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
-                    , PlayerCommand.PlayerAction.IDLE, new Location(getX(), getY()));
+                if (!command.isEqual(PlayerCommand.PlayerAction.IDLE))
+                {
+                    currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
+                        , PlayerCommand.PlayerAction.IDLE, new Location(getX(), getY()));
+                }
             }
-            
+            catch (Exception e)
+            {
+            }
+
             state = MovementState.idle;
         }
 
@@ -230,5 +236,13 @@ public class PlayerMovement : MonoBehaviour
     private float getY()
     {
         return gameObject.transform.position.y;
+    }
+    
+    public void DeathByProjectile(String bullet_id)
+    {
+        PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
+            , PlayerCommand.PlayerAction.DEATH, new Location(transform.position.x, transform.position.y));
+        GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
+        GameController.Instance.CollideBullet(bullet_id, User.getUsername());
     }
 }

@@ -259,6 +259,7 @@ public class GameClient : IDisposable
     {
         PlayerCommand playerCommand = JsonConvert.DeserializeObject<PlayerCommand>(command);
 
+        BulletInfo bulletInfo;
         switch (playerCommand.m_Action)
         {
             case PlayerAction.JUMP:
@@ -295,7 +296,18 @@ public class GameClient : IDisposable
                     OnPlayerLeft?.Invoke(playerCommand.m_Username);
 
                 break;
-
+            case PlayerAction.BULLET_CREATED:
+                bulletInfo = playerCommand.m_bulletInfo;
+                GameController.Instance.NewBullet(bulletInfo.id,bulletInfo.owner,bulletInfo.position,bulletInfo.isToRight);
+                break;
+            case PlayerAction.BULLET_UPDATED:
+                bulletInfo = playerCommand.m_bulletInfo;
+                GameController.Instance.UpdateBullet(bulletInfo.id,bulletInfo.position);
+                break;
+            case PlayerAction.BULLET_DESTROY:
+                bulletInfo = playerCommand.m_bulletInfo;
+                GameController.Instance.DestroyBullet(bulletInfo.id);
+                break;
             default:
                 Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action);
                 break;
