@@ -148,6 +148,7 @@ public class GameController : MonoBehaviour
                     , PlayerAction.COIN_COLLECT, new Location(0,0));
         this.SendMessageToServer(coinCollectCommand.ToJson()+"\n");
     }
+    
 
     public void SetMatchStarted()
     {
@@ -179,7 +180,7 @@ public class GameController : MonoBehaviour
 
     public void EndMatch()
     {
-
+        //TODO
     }
 
     private void resetGameControllerSettings()
@@ -306,6 +307,4 @@ public class GameController : MonoBehaviour
             m_projectiles.Remove(id);
         }
     }
-    
-    
 }

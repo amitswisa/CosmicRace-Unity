@@ -143,6 +143,12 @@ public class RivalMovement : MonoBehaviour
         Debug.Log("PowerUp Off!");
 
     }
+    
+    public void Attacked(Location location)
+    {
+        /*position lightning bolt for 1.5 sec and and trigger Death with player position (x,y)*/
+        this.TriggerDeath(location);
+    }
 
     public void TriggerDeath(Location location)
     {

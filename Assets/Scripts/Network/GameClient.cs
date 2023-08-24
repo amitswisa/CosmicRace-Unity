@@ -46,9 +46,9 @@ public class GameClient : IDisposable
 
             receiveBuffer = new byte[socket.ReceiveBufferSize];
             cancellationTokenSource = new CancellationTokenSource();
-
+            Console.WriteLine("Connecting to server...");
             await socket.ConnectAsync(Utils.GAME_SERVER_IP, Utils.GAME_SERVER_PORT);
-
+            Console.WriteLine("Connected to server");
             stream = socket.GetStream();
 
             if(i_IsFiendMode)
@@ -257,6 +257,7 @@ public class GameClient : IDisposable
 
     private void HandlePlayerCommand(string command)
     {
+        Console.WriteLine(command);
         PlayerCommand playerCommand = JsonConvert.DeserializeObject<PlayerCommand>(command);
 
         BulletInfo bulletInfo;
@@ -277,7 +278,16 @@ public class GameClient : IDisposable
             case PlayerAction.IDLE:
                 GameController.Instance.m_Rivals[playerCommand.m_Username].StopMoving(playerCommand);
                 break;
-            
+            case PlayerAction.ATTACK:
+                // TODO
+                Console.WriteLine(command);
+                Console.WriteLine(playerCommand);
+                // TODO check if playerCommand.m_Username is the killer or the victim
+                // TODO check if we need to access to m_Rivals or even when i attack (need to check)
+                
+                GameController.Instance.m_Rivals[playerCommand.m_Username].Attacked(playerCommand);
+                break;
+
             case PlayerAction.UPDATE_LOCATION:
                 GameController.Instance.m_Rivals[playerCommand.m_Username].PositionCorrection(playerCommand);
                 break;

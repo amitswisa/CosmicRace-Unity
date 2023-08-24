@@ -86,9 +86,8 @@ public sealed class MatchRival
         }
     }
 
-    public Location GetPlayerLocation()
+    public void Attacked(PlayerCommand command)
     {
-        Location location = new Location(m_Position.position.x, m_Position.position.y);
-        return location;
+        m_RivalMovement.Attacked(command.m_Location);
     }
 }
