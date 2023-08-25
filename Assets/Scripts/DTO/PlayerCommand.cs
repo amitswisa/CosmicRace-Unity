@@ -33,19 +33,33 @@ public sealed class PlayerCommand
         public string rivalName;
     }
 
+    public class AttackInfo
+    {
+        public String m_AttackerName;
+        public String m_Victim;
+        public String m_AttackID;
+
+        public override string ToString()
+        {
+            return "m_AttackerName: " + m_AttackerName + " m_Victim: " + m_Victim + " m_AttackID: " + m_AttackID;
+        }
+    }
+
     public string m_MessageType {get; set;}
     public string m_Username {get; set;}
     public string m_Action {get; set;}
     public Location m_Location {get; set;}
     public BulletInfo m_bulletInfo { get; set; }
+    public AttackInfo m_AttackInfo { get; set; }
 
     public PlayerCommand(string i_MessageType, string i_Username, string i_Action,
-        Location i_Location, BulletInfo  i_bulletInfo = null) 
+        Location i_Location, AttackInfo i_AttackInfo = null, BulletInfo  i_bulletInfo = null) 
     {
         this.m_MessageType = i_MessageType;
         this.m_Username = i_Username;
         this.m_Action = i_Action;
         this.m_Location = i_Location;
+        this.m_AttackInfo = i_AttackInfo;
         this.m_bulletInfo = i_bulletInfo;
     }
 

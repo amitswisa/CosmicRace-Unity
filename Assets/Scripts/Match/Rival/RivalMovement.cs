@@ -18,7 +18,7 @@ public class RivalMovement : MonoBehaviour
     private float speed = 7f;
     private float jumpForce = 14f;
     [SerializeField] private LayerMask floorLayerMask;
-    private enum MovementState {idle, running, jumping, falling}
+    private enum MovementState {idle, running, jumping, falling, attacked}
     private bool isPoweUpOn = false;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
@@ -30,6 +30,10 @@ public class RivalMovement : MonoBehaviour
     private Action isJumping;
     private float desiredHorizontalInput = 0f;
     private bool m_MovementLock = false;
+    private bool isAttacked = false;
+    public GameObject lighteningAttack;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +45,7 @@ public class RivalMovement : MonoBehaviour
         _animator = gameObject.GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         GetComponentInChildren<TextMeshPro>().SetText(GetComponent<PlayerData>().playerName);
+        SetVisibility(false);
     }
 
     // Update is called once per frame
@@ -143,11 +148,38 @@ public class RivalMovement : MonoBehaviour
         Debug.Log("PowerUp Off!");
 
     }
-    
-    public void Attacked(Location location)
+
+    public IEnumerator Attacked(Location location, float duration)
     {
-        /*position lightning bolt for 1.5 sec and and trigger Death with player position (x,y)*/
-        this.TriggerDeath(location);
+        SetVisibility(true);
+        OnAttacked();
+        yield return new WaitForSeconds(duration);
+        //SetVisibility(false);
+        //SetVisibility(false);
+    }
+    
+    private void SetVisibility(bool attacked)
+    {
+        isAttacked = attacked;
+       
+        if (lighteningAttack != null)
+        {
+            lighteningAttack.SetActive(attacked);
+        }
+    }
+    
+
+    private void OnAttacked()
+    {
+        // Send death notification.
+        SetVisibility(false);
+        PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
+            , PlayerCommand.PlayerAction.DEATH, new Location(transform.position.x, transform.position.y));
+        GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
+        Debug.Log("Death trigger sent!");
+        GetComponentInChildren<TextMeshPro>().SetText("");
+        _animator.SetTrigger("death");
+        GetComponent<Transform>().transform.position = transform.position;
     }
 
     public void TriggerDeath(Location location)

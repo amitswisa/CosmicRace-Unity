@@ -76,6 +76,7 @@ public class GameController : MonoBehaviour
         this.m_projectiles = null;
 
        rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
+       Debug.Log("total of rivalPrefabs="+ rivalPrefabs.Length);
        projectilePrefab = Resources.Load<GameObject>("2D Pixel Spaceship - Two Small Ships/Prefabs/fireballs/fireball-red-tail-med.prefab");
     }
     
@@ -130,8 +131,10 @@ public class GameController : MonoBehaviour
                 // Convert CharacterData to JObject
                 JObject characterData = JObject.Parse((string)player.Value["CharacterData"]);
                 int characterID = ((int)characterData["characterID"]) - 1;
+                
+                Debug.Log("characterID="+characterID);
 
-                m_RivalPrefab = rivalPrefabs[characterID];
+                m_RivalPrefab = rivalPrefabs[0];
                 GameObject newRival = Instantiate(m_RivalPrefab);
 
                 MatchRival matchRival = new MatchRival(playerName, newRival, characterID);

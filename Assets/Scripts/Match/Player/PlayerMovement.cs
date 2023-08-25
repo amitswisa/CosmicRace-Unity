@@ -201,7 +201,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
     
-    private IEnumerator Attacked(float duration)
+    public IEnumerator Attacked(float duration)
     {
         SetVisibility(true);
         PlayLightningSound(lightningSound);
