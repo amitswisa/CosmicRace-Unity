@@ -59,6 +59,12 @@ public class PlayerMovement : MonoBehaviour
         _dirX = Input.GetAxisRaw("Horizontal");
         _rigidbody2D.velocity = new Vector2( _dirX * speed, _rigidbody2D.velocity.y);
         
+        if(Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            currentCommand = command;
+            GameController.Instance.PlayerQuit();
+        }
+
         if (IsOnGround() && Input.GetKeyDown(KeyCode.Space))
         {
             jumpSoundEffect.Play();
@@ -66,12 +72,6 @@ public class PlayerMovement : MonoBehaviour
             
             currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                 , PlayerCommand.PlayerAction.JUMP, new Location(getX(), getY()));
-        }
-        
-        if(Input.GetKeyDown(KeyCode.Escape)) 
-        {
-            currentCommand = command;
-            GameController.Instance.PlayerQuit();
         }
 
         if((Input.GetKey(KeyCode.D) || Input.GetKeyDown(KeyCode.D)) && !command.isEqual(PlayerCommand.PlayerAction.RUN_RIGHT))

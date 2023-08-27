@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class MatchManager : MonoBehaviour
 {
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +19,9 @@ public class MatchManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(GameController.Instance.m_IsFriendMode 
+            && Input.GetKeyDown(KeyCode.Escape))
+                GameController.Instance.PlayerQuit();
     }
 
     private void DestroyPlayer()

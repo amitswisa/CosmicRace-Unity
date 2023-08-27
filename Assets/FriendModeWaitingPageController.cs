@@ -15,6 +15,14 @@ public class FriendModeWaitingPageController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        VerticalLayoutGroup verticalLayout = contentPanel.gameObject.AddComponent<VerticalLayoutGroup>();
+        verticalLayout.childAlignment = TextAnchor.MiddleLeft; // Align children to the left
+        verticalLayout.childForceExpandHeight = true; // Force children to expand to the full height of the contentPanel
+        verticalLayout.childForceExpandWidth = true; // Do not force children to expand in width
+
+        ContentSizeFitter sizeFitter = contentPanel.gameObject.AddComponent<ContentSizeFitter>();
+        sizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize; // Adjust width based on the content size
+
         this.m_WaitingPlayers = new List<string>();
 
         m_StartGameBtn.onClick.AddListener(onStartGameBtnClicked);
@@ -59,7 +67,7 @@ public class FriendModeWaitingPageController : MonoBehaviour
         for (int i = 0; i < m_WaitingPlayers.Count; i++)
         {
             GameObject newItem = Instantiate(itemPrefab, contentPanel);
-            newItem.GetComponent<TextMeshProUGUI>().text = (i+1).ToString() + ". " + m_WaitingPlayers[i] + "\n";
+            newItem.GetComponent<TextMeshProUGUI>().text = (i+1).ToString() + ". " + m_WaitingPlayers[i] + '\n';
         }
     }
 
