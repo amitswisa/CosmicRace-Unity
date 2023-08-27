@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static PlayerCommand;
@@ -46,9 +47,9 @@ public class GameClient : IDisposable
 
             receiveBuffer = new byte[socket.ReceiveBufferSize];
             cancellationTokenSource = new CancellationTokenSource();
-
+            Console.WriteLine("Connecting to server...");
             await socket.ConnectAsync(Utils.GAME_SERVER_IP, Utils.GAME_SERVER_PORT);
-
+            Console.WriteLine("Connected to server");
             stream = socket.GetStream();
 
             if(i_IsFiendMode)
@@ -257,7 +258,42 @@ public class GameClient : IDisposable
 
     private void HandlePlayerCommand(string command)
     {
+        Debug.Log(command);
         PlayerCommand playerCommand = JsonConvert.DeserializeObject<PlayerCommand>(command);
+
+        if (playerCommand.m_AttackInfo != null &&
+            playerCommand.m_AttackInfo.m_AttackerName != null &&
+            playerCommand.m_AttackInfo.m_Victim != null
+            )
+        {
+            AttackInfo attackInfo = playerCommand.m_AttackInfo;
+            
+            Debug.Log("GameClient.cs: " + "Attack - attackInfo: " + attackInfo.ToString());
+            Debug.Log("GameClient.cs: " + "Attack - m_AttackerName: " + attackInfo.m_AttackerName);
+            Debug.Log("GameClient.cs: " + "Attack - m_Victim: " + attackInfo.m_Victim);
+
+            // TODO check if playerCommand.m_Username is the killer or the victim
+            // TODO check if we need to access to m_Rivals or even when i attack (need to check)
+            Debug.Log("GameClient.cs: " + "Attack - m_Rivals: " +GameController.Instance.m_Rivals.Count);
+            foreach (var rival in GameController.Instance.m_Rivals)
+            {
+                Debug.Log("GameClient.cs: " + "Attack - m_Rivals rival.key: " + rival.Key);
+                Debug.Log("GameClient.cs: " + "Attack - m_Rivals rival.Value.m_Username: " + rival.Value.m_Username);
+                Debug.Log("GameClient.cs: " + "Attack - m_Rivals rival.Value.mCharacterId: " + rival.Value.mCharacterId);
+            }
+            Debug.Log("GameClient.cs: " + "Attack - User.getUsername: " +User.getUsername());
+            if (attackInfo.m_Victim != User.getUsername())
+            {
+                GameController.Instance.m_Rivals[attackInfo.m_Victim].Attacked(playerCommand);
+            }
+            else
+            {
+                GameObject player = GameObject.FindWithTag("Player");
+                player.GetComponent<PlayerMovement>().Attacked(1.5f);
+            }
+
+            return; // TODO CHECK IF VALID RRETURN HERE
+        }
 
         BulletInfo bulletInfo;
         switch (playerCommand.m_Action)
@@ -277,7 +313,15 @@ public class GameClient : IDisposable
             case PlayerAction.IDLE:
                 GameController.Instance.m_Rivals[playerCommand.m_Username].StopMoving(playerCommand);
                 break;
-            
+            case PlayerAction.ATTACK:
+                // TODO
+                Debug.Log(command);
+                //Debug.Log("GameClient.cs: " + "Attack - command: " + command);
+                
+                
+                
+                break;
+
             case PlayerAction.UPDATE_LOCATION:
                 GameController.Instance.m_Rivals[playerCommand.m_Username].PositionCorrection(playerCommand);
                 break;

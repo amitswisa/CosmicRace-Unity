@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 14f;
     [SerializeField] private LayerMask floorLayerMask;
     [SerializeField] private AudioSource jumpSoundEffect;
-    private enum MovementState {idle, running, jumping, falling}
+    private enum MovementState {idle, running, jumping, falling, attack, attacked}
     private bool isPoweUpOn = false;
     private bool isEnumerate = false;
     private Animator _animator;
@@ -22,6 +22,10 @@ public class PlayerMovement : MonoBehaviour
     private float _dirX = 0f;
     private long lastLocationSend;
     private PlayerCommand command;
+    private bool isAttacked = false;
+    public GameObject lighteningAttack;
+    public AudioClip lightningSound;
+    private AudioSource lightningAudioSource;
 
     // Start is called before the first frame update
     void Awake()
@@ -48,6 +52,12 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<PlayerData>()._selected_charecter = PlayerPrefs.GetInt("SelectedCharacter", 0);
 
         GetComponentInChildren<TextMeshPro>().SetText(User.getUsername());
+        SetVisibility(false);
+        lightningAudioSource = lighteningAttack.GetComponent<AudioSource>();
+        if (lightningAudioSource == null)
+        {
+            lightningAudioSource = lighteningAttack.GetComponent<AudioSource>();
+        }
     }
 
     void Update() 
@@ -82,6 +92,13 @@ public class PlayerMovement : MonoBehaviour
         {
              currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                                         , PlayerCommand.PlayerAction.RUN_LEFT, new Location(getX(), getY()));
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername(),
+                PlayerCommand.PlayerAction.ATTACK, new Location(getX(), getY()));
+            // StartCoroutine((Attack(1.5f)));
         }
 
         UpdateLoctionAtServerTask();
@@ -166,6 +183,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if(!currentCommand.isEqual(command.m_Action))
             {
+                Debug.Log("-----------------\n"+currentCommand.ToJson()+"\n-------------");
                 GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
                 command = currentCommand;
             }
@@ -181,6 +199,53 @@ public class PlayerMovement : MonoBehaviour
         isPoweUpOn = false;
         Debug.Log("PowerUp Off!");
 
+    }
+    
+    public IEnumerator Attacked(float duration)
+    {
+        SetVisibility(true);
+        PlayLightningSound(lightningSound);
+        OnAttacked();
+        yield return new WaitForSeconds(duration);
+        SetVisibility(false);
+    }
+    
+    private void SetVisibility(bool attacked)
+    {
+        isAttacked = attacked;
+       
+        if (lighteningAttack != null)
+        {
+            lighteningAttack.SetActive(attacked);
+        }
+    }
+    
+    private void PlayLightningSound(AudioClip lightningSoundClip)
+    {
+        if (lightningAudioSource != null && lightningSoundClip != null)
+        {
+            lightningAudioSource.PlayOneShot(lightningSoundClip);
+            
+        }
+    }
+
+    private void OnAttacked()
+    {
+        float exp = GetComponent<PlayerData>().exp;
+        exp -= 35;
+        exp = exp < 0 ? 0 : exp;
+        GetComponent<PlayerData>().exp = exp;
+        _rigidbody2D.bodyType = RigidbodyType2D.Static;
+        ResetIsSpecialPowerOn();
+
+        // Send death notification.
+        PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
+            , PlayerCommand.PlayerAction.DEATH, new Location(transform.position.x, transform.position.y));
+        GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
+        Debug.Log("Death trigger sent!");
+        GetComponentInChildren<TextMeshPro>().SetText("");
+        _animator.SetTrigger("death");
+        GetComponent<Transform>().transform.position = transform.position;
     }
 
     private Transform respawnPoint = null;
