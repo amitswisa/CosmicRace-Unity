@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour
     public GameObject[] rivalPrefabs;
     public GameObject projectilePrefab;
     public Dictionary<string, Projectile> m_projectiles {get; private set;}
+
+    // public Dictionary<string, string> m_endMatch; // timestamp to character that end the match
     private static GameController instance; // Singleton instance
     public static GameController Instance // Public instance property
     {

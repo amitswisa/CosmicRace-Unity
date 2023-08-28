@@ -260,28 +260,14 @@ public class GameClient : IDisposable
     {
         Debug.Log(command);
         PlayerCommand playerCommand = JsonConvert.DeserializeObject<PlayerCommand>(command);
-
+        //// start attack info
+        Debug.Log("GameClient.cs: " + "Attack - playerCommand.m_AttackInfo: " + playerCommand.m_AttackInfo.ToString());
         if (playerCommand.m_AttackInfo != null &&
             playerCommand.m_AttackInfo.m_AttackerName != null &&
             playerCommand.m_AttackInfo.m_Victim != null
             )
         {
             AttackInfo attackInfo = playerCommand.m_AttackInfo;
-            
-            Debug.Log("GameClient.cs: " + "Attack - attackInfo: " + attackInfo.ToString());
-            Debug.Log("GameClient.cs: " + "Attack - m_AttackerName: " + attackInfo.m_AttackerName);
-            Debug.Log("GameClient.cs: " + "Attack - m_Victim: " + attackInfo.m_Victim);
-
-            // TODO check if playerCommand.m_Username is the killer or the victim
-            // TODO check if we need to access to m_Rivals or even when i attack (need to check)
-            Debug.Log("GameClient.cs: " + "Attack - m_Rivals: " +GameController.Instance.m_Rivals.Count);
-            foreach (var rival in GameController.Instance.m_Rivals)
-            {
-                Debug.Log("GameClient.cs: " + "Attack - m_Rivals rival.key: " + rival.Key);
-                Debug.Log("GameClient.cs: " + "Attack - m_Rivals rival.Value.m_Username: " + rival.Value.m_Username);
-                Debug.Log("GameClient.cs: " + "Attack - m_Rivals rival.Value.mCharacterId: " + rival.Value.mCharacterId);
-            }
-            Debug.Log("GameClient.cs: " + "Attack - User.getUsername: " +User.getUsername());
             if (attackInfo.m_Victim != User.getUsername())
             {
                 GameController.Instance.m_Rivals[attackInfo.m_Victim].Attacked(playerCommand);
@@ -289,11 +275,10 @@ public class GameClient : IDisposable
             else
             {
                 GameObject player = GameObject.FindWithTag("Player");
-                player.GetComponent<PlayerMovement>().Attacked(1.5f);
+                player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
             }
-
-            return; // TODO CHECK IF VALID RRETURN HERE
         }
+        //// end attack info
 
         BulletInfo bulletInfo;
         switch (playerCommand.m_Action)
@@ -318,7 +303,21 @@ public class GameClient : IDisposable
                 Debug.Log(command);
                 //Debug.Log("GameClient.cs: " + "Attack - command: " + command);
                 
-                
+                // if (playerCommand.m_AttackInfo != null &&
+                //     playerCommand.m_AttackInfo.m_AttackerName != null &&
+                //     playerCommand.m_AttackInfo.m_Victim != null
+                //    )
+                // {
+                //     if (attackInfo.m_Victim != User.getUsername())
+                //     {
+                //         GameController.Instance.m_Rivals[attackInfo.m_Victim].Attacked(playerCommand);
+                //     }
+                //     else
+                //     {
+                //         GameObject player = GameObject.FindWithTag("Player");
+                //         player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
+                //     }
+                // }
                 
                 break;
 
@@ -351,6 +350,9 @@ public class GameClient : IDisposable
             case PlayerAction.BULLET_DESTROY:
                 bulletInfo = playerCommand.m_bulletInfo;
                 GameController.Instance.DestroyBullet(bulletInfo.id);
+                break;
+            case PlayerAction.COMPLETE_LEVEL: // check maybe COMPLETE_MATCH (see server)
+                Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action +" was complete the level");
                 break;
             default:
                 Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action);
