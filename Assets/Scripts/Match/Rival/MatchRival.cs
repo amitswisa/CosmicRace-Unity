@@ -11,7 +11,6 @@ public sealed class MatchRival
     private RivalCharacter m_RivalCharacterDefinitions;
     public MatchRival(string i_Username, GameObject i_Object, int i_CharacterId)
     {
-        Debug.Log("Rival name:" + i_Username);
         this.m_Username = i_Username;
         this.m_rivalInstance = i_Object;
         this.mCharacterId = i_CharacterId;
@@ -21,6 +20,7 @@ public sealed class MatchRival
         this.m_RivalCharacterDefinitions = this.m_rivalInstance.GetComponent<RivalCharacter>();
         this.m_rivalInstance.GetComponent<PlayerData>().playerName = m_Username;
         this.m_rivalInstance.GetComponent<PlayerData>()._selected_charecter = i_CharacterId;
+        this.m_rivalInstance.tag = "Player";
         
         this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId);
     }

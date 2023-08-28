@@ -9,6 +9,7 @@ public static class User {
     private static int m_Userid = -1;
     private static int m_UserLevel = 0;
     private static int m_UserCoins = 0;
+    private static int m_XP = 0;
     private static string jwtoken = "";
     private static List<Character> m_Characters;
 
@@ -66,6 +67,16 @@ public static class User {
 
     public static int getUserId() {
         return m_Userid;
+    }
+
+    public static float getProgress()
+    {
+        return m_XP / 100;
+    }
+
+    public static int getLevel()
+    {
+        return m_UserLevel;
     }
 
     public static List<Character> GetCharactersList()
