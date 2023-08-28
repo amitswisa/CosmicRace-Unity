@@ -69,7 +69,7 @@ public class GameClient : IDisposable
         {
             OKDialogManager.Instance.ShowDialog("Error", "Unexpected server connection failure occured.");
             Debug.LogError($"{e.Message}");
-            Dispose();
+            GameController.Instance.Disconnect();
         }
     }
 
@@ -113,7 +113,7 @@ public class GameClient : IDisposable
             {   
                 OKDialogManager.Instance.ShowDialog("Error", "Unexpected error was occured.");
                 Debug.LogError($"Error while writing to stream: {ex.Message}");
-                Dispose();
+                GameController.Instance.Disconnect();
             }
         }
     }
@@ -294,8 +294,6 @@ public class GameClient : IDisposable
 
             return; // TODO CHECK IF VALID RRETURN HERE
         }
-
-        BulletInfo bulletInfo;
         switch (playerCommand.m_Action)
         {
             case PlayerAction.JUMP:
@@ -317,9 +315,6 @@ public class GameClient : IDisposable
                 // TODO
                 Debug.Log(command);
                 //Debug.Log("GameClient.cs: " + "Attack - command: " + command);
-                
-                
-                
                 break;
 
             case PlayerAction.UPDATE_LOCATION:
@@ -339,18 +334,6 @@ public class GameClient : IDisposable
                 if(GameController.Instance.m_IsFriendMode && !GameController.Instance.m_IsMatchStarted)
                     OnPlayerLeft?.Invoke(playerCommand.m_Username);
 
-                break;
-            case PlayerAction.BULLET_CREATED:
-                bulletInfo = playerCommand.m_bulletInfo;
-                GameController.Instance.NewBullet(bulletInfo.id,bulletInfo.owner,bulletInfo.position,bulletInfo.isToRight);
-                break;
-            case PlayerAction.BULLET_UPDATED:
-                bulletInfo = playerCommand.m_bulletInfo;
-                GameController.Instance.UpdateBullet(bulletInfo.id,bulletInfo.position);
-                break;
-            case PlayerAction.BULLET_DESTROY:
-                bulletInfo = playerCommand.m_bulletInfo;
-                GameController.Instance.DestroyBullet(bulletInfo.id);
                 break;
             default:
                 Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action);

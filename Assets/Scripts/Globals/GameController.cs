@@ -76,7 +76,6 @@ public class GameController : MonoBehaviour
         this.m_projectiles = null;
 
        rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
-       Debug.Log("total of rivalPrefabs="+ rivalPrefabs.Length);
        projectilePrefab = Resources.Load<GameObject>("2D Pixel Spaceship - Two Small Ships/Prefabs/fireballs/fireball-red-tail-med.prefab");
     }
     
@@ -131,8 +130,6 @@ public class GameController : MonoBehaviour
                 // Convert CharacterData to JObject
                 JObject characterData = JObject.Parse((string)player.Value["CharacterData"]);
                 int characterID = ((int)characterData["characterID"]) - 1;
-                
-                Debug.Log("characterID="+characterID);
 
                 m_RivalPrefab = rivalPrefabs[0];
                 GameObject newRival = Instantiate(m_RivalPrefab);
@@ -152,7 +149,6 @@ public class GameController : MonoBehaviour
         this.SendMessageToServer(coinCollectCommand.ToJson()+"\n");
     }
     
-
     public void SetMatchStarted()
     {
         this.m_IsMatchStarted = true;
@@ -183,7 +179,7 @@ public class GameController : MonoBehaviour
 
     public void EndMatch()
     {
-        //TODO
+        this.Disconnect("Match has ended!");
     }
 
     private void resetGameControllerSettings()
