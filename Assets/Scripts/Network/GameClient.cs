@@ -265,25 +265,7 @@ public class GameClient : IDisposable
     {
         Debug.Log(command);
         PlayerCommand playerCommand = JsonConvert.DeserializeObject<PlayerCommand>(command);
-        //// start attack info
-        Debug.Log("GameClient.cs: " + "Attack - playerCommand.m_AttackInfo: " + playerCommand.m_AttackInfo.ToString());
-        if (playerCommand.m_AttackInfo != null &&
-            playerCommand.m_AttackInfo.m_AttackerName != null &&
-            playerCommand.m_AttackInfo.m_Victim != null
-            )
-        {
-            AttackInfo attackInfo = playerCommand.m_AttackInfo;
-            if (attackInfo.m_Victim != User.getUsername())
-            {
-                GameController.Instance.m_Rivals[attackInfo.m_Victim].Attacked(playerCommand);
-            }
-            else
-            {
-                GameObject player = GameObject.FindWithTag("Player");
-                player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
-            }
-        }
-        //// end attack info
+
         switch (playerCommand.m_Action)
         {
             case PlayerAction.JUMP:
@@ -303,8 +285,23 @@ public class GameClient : IDisposable
                 break;
             case PlayerAction.ATTACK:
                 // TODO
-                Debug.Log(command);
-                //Debug.Log("GameClient.cs: " + "Attack - command: " + command);
+                if (playerCommand.m_AttackInfo != null
+                         && playerCommand.m_AttackInfo.m_AttackerName != null
+                                && playerCommand.m_AttackInfo.m_Victim != null)
+                {
+                    AttackInfo attackInfo = playerCommand.m_AttackInfo;
+                    if (attackInfo.m_Victim != User.getUsername())
+                    {
+                        GameController.Instance.m_Rivals[attackInfo.m_Victim].Attacked(playerCommand);
+                    }
+                    else
+                    {
+                        GameObject player = GameObject.FindWithTag("Player");
+                        player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
+                    }
+                }
+                
+                Debug.Log("GameClient.cs: " + "Attack - command: " + command);
                 break;
 
             case PlayerAction.UPDATE_LOCATION:
