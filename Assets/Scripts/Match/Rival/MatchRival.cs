@@ -88,6 +88,6 @@ public sealed class MatchRival
 
     public void Attacked(PlayerCommand command)
     {
-        m_RivalMovement.Attacked(command.m_Location, 1.5f);
+        m_RivalMovement.AttackedByLighting(command.m_Location, 1.5f);
     }
 }

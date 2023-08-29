@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<PlayerData>()._selected_charecter = PlayerPrefs.GetInt("SelectedCharacter", 0);
 
         GetComponentInChildren<TextMeshPro>().SetText(User.getUsername());
-        SetVisibility(false);
+        SetLightingVisibility(false);
         lightningAudioSource = lighteningAttack.GetComponent<AudioSource>();
         if (lightningAudioSource == null)
         {
@@ -200,17 +200,23 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("PowerUp Off!");
 
     }
-    
-    public IEnumerator Attacked(float duration)
+
+
+    public void AttackedByLighting(float duration)
     {
-        SetVisibility(true);
+        StartCoroutine(Attacked(duration));
+    }
+
+    private IEnumerator Attacked(float duration)
+    {
+        SetLightingVisibility(true);
         PlayLightningSound(lightningSound);
-        OnAttacked();
+        OnLightingAttacked();
         yield return new WaitForSeconds(duration);
-        SetVisibility(false);
+        SetLightingVisibility(false);
     }
     
-    private void SetVisibility(bool attacked)
+    private void SetLightingVisibility(bool attacked)
     {
         isAttacked = attacked;
        
@@ -229,7 +235,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnAttacked()
+    private void OnLightingAttacked()
     {
         float exp = GetComponent<PlayerData>().exp;
         exp -= 35;

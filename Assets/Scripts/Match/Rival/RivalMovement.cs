@@ -30,7 +30,6 @@ public class RivalMovement : MonoBehaviour
     private Action isJumping;
     private float desiredHorizontalInput = 0f;
     private bool m_MovementLock = false;
-    private bool isAttacked = false;
     public GameObject lighteningAttack;
 
     
@@ -45,7 +44,7 @@ public class RivalMovement : MonoBehaviour
         _animator = gameObject.GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         GetComponentInChildren<TextMeshPro>().SetText(GetComponent<PlayerData>().playerName);
-        SetVisibility(false);
+        SetLightingVisibility(false);
     }
 
     // Update is called once per frame
@@ -149,19 +148,21 @@ public class RivalMovement : MonoBehaviour
 
     }
 
-    public IEnumerator Attacked(Location location, float duration)
+    public void AttackedByLighting(Location location, float duration)
     {
-        SetVisibility(true);
+        StartCoroutine(Attacked(location, duration));
+    }
+
+    private IEnumerator Attacked(Location location, float duration)
+    {
+        SetLightingVisibility(true);
         OnAttacked();
         yield return new WaitForSeconds(duration);
-        //SetVisibility(false);
-        //SetVisibility(false);
+        SetLightingVisibility(false);
     }
     
-    private void SetVisibility(bool attacked)
+    private void SetLightingVisibility(bool attacked)
     {
-        isAttacked = attacked;
-       
         if (lighteningAttack != null)
         {
             lighteningAttack.SetActive(attacked);
@@ -172,10 +173,6 @@ public class RivalMovement : MonoBehaviour
     private void OnAttacked()
     {
         // Send death notification.
-        SetVisibility(false);
-        PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
-            , PlayerCommand.PlayerAction.DEATH, new Location(transform.position.x, transform.position.y));
-        GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
         Debug.Log("Death trigger sent!");
         GetComponentInChildren<TextMeshPro>().SetText("");
         _animator.SetTrigger("death");
