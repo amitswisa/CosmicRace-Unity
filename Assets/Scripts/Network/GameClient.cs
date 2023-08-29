@@ -304,6 +304,7 @@ public class GameClient : IDisposable
             case PlayerAction.ATTACK:
                 // TODO
                 Debug.Log(command);
+                //Debug.Log("GameClient.cs: " + "Attack - command: " + command);
                 break;
 
             case PlayerAction.UPDATE_LOCATION:
