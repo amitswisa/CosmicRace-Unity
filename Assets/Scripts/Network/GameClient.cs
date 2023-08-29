@@ -326,9 +326,6 @@ public class GameClient : IDisposable
             case PlayerAction.COMPLETE_LEVEL: // check maybe COMPLETE_MATCH (see server)
                 Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action +" was complete the level");
                 break;
-            case PlayerAction.COMPLETE_LEVEL: // check maybe COMPLETE_MATCH (see server)
-                Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action +" was complete the level");
-                break;
             default:
                 Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action);
                 break;
