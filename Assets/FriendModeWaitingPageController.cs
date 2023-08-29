@@ -11,6 +11,7 @@ public class FriendModeWaitingPageController : MonoBehaviour
     public Transform contentPanel; // Content of the ScrollView
     public TextMeshProUGUI waitingText;
     public List<string> m_WaitingPlayers {get; private set;}
+    public GameObject backBtn;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +38,9 @@ public class FriendModeWaitingPageController : MonoBehaviour
             }
 
         UpdateListDisplay();
+
+        // Back btn login of canceling room.
+        backBtn.GetComponent<Button>().onClick.AddListener(cancelMatchRoom);
     }
 
     // Call this function whenever the list changes
@@ -97,5 +101,10 @@ public class FriendModeWaitingPageController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void cancelMatchRoom()
+    {
+        GameController.Instance.SendMessageToServer("QUIT\n");
     }
 }

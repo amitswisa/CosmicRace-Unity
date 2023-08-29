@@ -12,6 +12,7 @@ TagManager:
   - Text
   - Image
   - pageTitle
+  - backbtn
   layers:
   - Default
   - TransparentFX

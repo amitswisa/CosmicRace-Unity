@@ -156,7 +156,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000037993992}
+  m_AnchoredPosition: {x: 0, y: 0.00019868532}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &61831398
@@ -1083,6 +1083,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1242965975}
     m_Modifications:
+    - target: {fileID: 1396834914285115911, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_Delegates.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396834914285115911, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396834914285115911, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396834914285115911, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 247462945}
+    - target: {fileID: 1396834914285115911, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396834914285115911, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409190834202647668, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409190834202647668, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409190834202647668, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11500000, guid: 3ba05cdf4a8c45943ba668bfd71e497d, type: 3}
+    - target: {fileID: 6409190834202647668, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409190834202647670, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+      propertyPath: m_TagString
+      value: backbtn
+      objectReference: {fileID: 0}
     - target: {fileID: 6409190834202647671, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
       propertyPath: m_SizeDelta.x
       value: 150
@@ -1216,6 +1260,16 @@ PrefabInstance:
 --- !u!224 &247462944 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6409190835199519861, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+  m_PrefabInstance: {fileID: 247462943}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &247462945 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6409190835199519860, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
+  m_PrefabInstance: {fileID: 247462943}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &247462946 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6409190834202647670, guid: 99a3fffb6d4627944b8f5c63e4708652, type: 3}
   m_PrefabInstance: {fileID: 247462943}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &420187002
@@ -2820,6 +2874,7 @@ MonoBehaviour:
   m_StartGameBtn: {fileID: 1300695474}
   contentPanel: {fileID: 2144755439}
   waitingText: {fileID: 1940272346}
+  backBtn: {fileID: 247462946}
 --- !u!1 &1300695472
 GameObject:
   m_ObjectHideFlags: 0
