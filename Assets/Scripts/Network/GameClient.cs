@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static PlayerCommand;
 
 public class GameClient : IDisposable
@@ -23,6 +24,7 @@ public class GameClient : IDisposable
     private bool IsConnected => socket != null && socket.Connected;
     private Task processMessagesTask;
     private Task receiveDataTask;
+    private Text m_UpdatesTextObject; // Updates game status object for client.
 
     private GameClient()
     {
@@ -198,18 +200,21 @@ public class GameClient : IDisposable
                 else if (content.Trim().Equals("READY?"))
                 {
                     await SendMessageToServer("READY\n");
-                    Debug.Log("Server is ready to start the game");
+                    this.UpdateTextObject("Server is ready to start the game");
                 }
                 break;
 
             case "NOTIFICATION":
+                this.UpdateTextObject(content);
                 Debug.Log(content);
                 break;
 
             case "ACTION":
                 if (content.Trim().Equals("START"))
                 {
+                    UpdateTextObject("Starting Game...");
                     Debug.Log("Starting Game...");
+                    
                     await Task.Delay(1000); // Delay before scene transition
                     await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
@@ -299,10 +304,6 @@ public class GameClient : IDisposable
             case PlayerAction.ATTACK:
                 // TODO
                 Debug.Log(command);
-                //Debug.Log("GameClient.cs: " + "Attack - command: " + command);
-                
-                
-                
                 break;
 
             case PlayerAction.UPDATE_LOCATION:
@@ -362,6 +363,17 @@ public class GameClient : IDisposable
     public bool IsConnectionAlive()
     {
         return this.IsConnected;
+    }
+
+    public void AddUpdateViewListener(Text o_UpdateObject)
+    {
+        this.m_UpdatesTextObject = o_UpdateObject;
+    }
+
+    private void UpdateTextObject(string i_Text)
+    {
+        if(this.m_UpdatesTextObject != null)
+            this.m_UpdatesTextObject.text = i_Text;
     }
 
     public void Disconnect()

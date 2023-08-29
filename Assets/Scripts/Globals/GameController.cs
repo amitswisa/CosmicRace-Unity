@@ -308,4 +308,9 @@ public class GameController : MonoBehaviour
             m_projectiles.Remove(id);
         }
     }
+
+    public void AddUpdateViewListener(Text o_UpdateOject)
+    {
+        GameClient.Instance.AddUpdateViewListener(o_UpdateOject);
+    }
 }
