@@ -233,6 +233,16 @@ public class GameClient : IDisposable
                 GameController.Instance.Disconnect(content);
                 break;
 
+            case "COMPLETE_LEVEL":
+                JObject completeLevelJson = JObject.Parse(content);
+                
+                // Extract Username and Poisition keys from content
+                string finishedPlayerName = (string)completeLevelJson["Username"];
+                int finishedPlayerPosition = (int)completeLevelJson["Position"];
+
+                Debug.Log("" + finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
+                break;
+
             case "COMPLETE_MATCH":
                     await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
@@ -300,7 +310,7 @@ public class GameClient : IDisposable
                         player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
                     }
                 }
-                
+
                 Debug.Log("GameClient.cs: " + "Attack - command: " + command);
                 break;
 
