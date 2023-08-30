@@ -233,19 +233,27 @@ public class GameClient : IDisposable
                 GameController.Instance.Disconnect(content);
                 break;
 
-            case "COMPLETE_LEVEL":
+            case PlayerAction.COMPLETE_LEVEL:
+                Debug.Log("COMPLETE_LEVEL");
+                Debug.Log(content);
                 JObject completeLevelJson = JObject.Parse(content);
                 
                 // Extract Username and Poisition keys from content
                 string finishedPlayerName = (string)completeLevelJson["Username"];
                 int finishedPlayerPosition = (int)completeLevelJson["Position"];
+                
+                GameController.Instance.m_finish_players.Add(finishedPlayerName, finishedPlayerPosition);
 
                 Debug.Log("" + finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
                 break;
 
             case "COMPLETE_MATCH":
+                Debug.Log("COMPLETE_MATCH");
+                Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
+                        /// TODO go to finish scene
+                        SceneManager.LoadScene("FinishScene", LoadSceneMode.Single);
                         OKDialogManager.Instance.ShowDialog("Match Finish!", content);
                     });
                 break;

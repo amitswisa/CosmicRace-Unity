@@ -22,6 +22,8 @@ public class GameController : MonoBehaviour
     public GameObject[] rivalPrefabs;
     public GameObject projectilePrefab;
     public Dictionary<string, Projectile> m_projectiles {get; private set;}
+    public Dictionary<string, int> m_finish_players {get; set;}
+    public Dictionary<string, Sprite> m_player_to_prefab_skin {get; set;}
 
     // public Dictionary<string, string> m_endMatch; // timestamp to character that end the match
     private static GameController instance; // Singleton instance
@@ -77,6 +79,9 @@ public class GameController : MonoBehaviour
         this.m_Rivals = null;
         this.m_projectiles = null;
 
+        m_finish_players = new Dictionary<string, int>();
+        m_player_to_prefab_skin = new Dictionary<string, Sprite>();
+
        rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
        projectilePrefab = Resources.Load<GameObject>("2D Pixel Spaceship - Two Small Ships/Prefabs/fireballs/fireball-red-tail-med.prefab");
     }
@@ -126,15 +131,20 @@ public class GameController : MonoBehaviour
             
             if(!playerName.Equals(User.getUsername()))
             {
-                if(this.m_Rivals == null)
+                if (this.m_Rivals == null)
+                {
                     this.m_Rivals = new Dictionary<string, MatchRival>();
+                    this.m_finish_players = new Dictionary<string, int>();
+                }
 
                 // Convert CharacterData to JObject
                 JObject characterData = JObject.Parse((string)player.Value["CharacterData"]);
                 int characterID = ((int)characterData["characterID"]) - 1;
 
                 m_RivalPrefab = rivalPrefabs[0];
+                
                 GameObject newRival = Instantiate(m_RivalPrefab);
+                m_player_to_prefab_skin.Add(playerName, newRival.GetComponent<SpriteRenderer>().sprite);
 
                 MatchRival matchRival = new MatchRival(playerName, newRival, characterID);
                 this.m_Rivals.Add(playerName, matchRival);

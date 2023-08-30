@@ -63,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
     void Update() 
     {
         if (!GameController.Instance.m_IsGameRunning) return;
+        if (GameController.Instance.m_IsPlayerFinished) return;
 
         PlayerCommand currentCommand = null;
 
@@ -105,6 +106,11 @@ public class PlayerMovement : MonoBehaviour
         UpdateAnimationState(currentCommand);
     }
 
+    public void setDirX(float i_dirx)
+    {
+        this._dirX = i_dirx;
+    }
+
     private long getCurrentTimeInMilliseconds()
     {
         return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -139,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
         isPoweUpOn = false;
     }
 
-    private void UpdateAnimationState(PlayerCommand currentCommand)
+    public void UpdateAnimationState(PlayerCommand currentCommand)
     {
         MovementState state;
         if (_dirX > 0f)
@@ -258,7 +264,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.CompareTag("Trap"))
+        if (col.gameObject.CompareTag("Trap") && !GameController.Instance.m_IsPlayerFinished)
         {
             float exp = GetComponent<PlayerData>().exp;
             exp -= 35;
