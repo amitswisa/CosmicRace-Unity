@@ -281,7 +281,7 @@ public class GameClient : IDisposable
 
     private void HandlePlayerCommand(string command)
     {
-        Debug.Log(command);
+        
         PlayerCommand playerCommand = JsonConvert.DeserializeObject<PlayerCommand>(command);
 
         switch (playerCommand.m_Action)
@@ -310,7 +310,7 @@ public class GameClient : IDisposable
                     AttackInfo attackInfo = playerCommand.m_AttackInfo;
                     if (attackInfo.m_Victim != User.getUsername())
                     {
-                        GameController.Instance.m_Rivals[attackInfo.m_Victim].Attacked(playerCommand);
+                        GameController.Instance.m_Rivals[attackInfo.m_Victim].AttackedByLighting(playerCommand);
                     }
                     else
                     {

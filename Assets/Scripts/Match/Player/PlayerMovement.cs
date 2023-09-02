@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     public GameObject lighteningAttack;
     public AudioClip lightningSound;
     private AudioSource lightningAudioSource;
+    private bool is_in_death = false;
 
     // Start is called before the first frame update
     void Awake()
@@ -64,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!GameController.Instance.m_IsGameRunning) return;
         if (GameController.Instance.m_IsPlayerFinished) return;
+        if (is_in_death) return;
 
         PlayerCommand currentCommand = null;
 
@@ -189,7 +191,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if(!currentCommand.isEqual(command.m_Action))
             {
-                Debug.Log("-----------------\n"+currentCommand.ToJson()+"\n-------------");
+                
                 GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
                 command = currentCommand;
             }
@@ -257,6 +259,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Death trigger sent!");
         GetComponentInChildren<TextMeshPro>().SetText("");
         _animator.SetTrigger("death");
+        is_in_death = true;
         GetComponent<Transform>().transform.position = transform.position;
     }
 
@@ -287,6 +290,7 @@ public class PlayerMovement : MonoBehaviour
             GetComponentInChildren<TextMeshPro>().SetText("");
 
             _animator.SetTrigger("death");
+            is_in_death = true;
 
             GetComponent<Transform>().transform.position = respawnPoint.position;
 
@@ -299,6 +303,7 @@ public class PlayerMovement : MonoBehaviour
     private void RestartLevel()
     {
         _animator.ResetTrigger("death");
+        is_in_death = false;
         GetComponentInChildren<TextMeshPro>().SetText(User.getUsername());
         Debug.Log("Name: "+  GetComponentInChildren<TextMeshPro>().text);
         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;

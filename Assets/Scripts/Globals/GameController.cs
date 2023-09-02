@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
     public GameObject projectilePrefab;
     public Dictionary<string, Projectile> m_projectiles {get; private set;}
     public Dictionary<string, int> m_finish_players {get; set;}
-    public Dictionary<string, Sprite> m_player_to_prefab_skin {get; set;}
+    public Dictionary<string, int> m_player_to_prefab_skin_id {get; set;}
 
     // public Dictionary<string, string> m_endMatch; // timestamp to character that end the match
     private static GameController instance; // Singleton instance
@@ -80,7 +80,7 @@ public class GameController : MonoBehaviour
         this.m_projectiles = null;
 
         m_finish_players = new Dictionary<string, int>();
-        m_player_to_prefab_skin = new Dictionary<string, Sprite>();
+        m_player_to_prefab_skin_id = new Dictionary<string, int>();
 
        rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
        projectilePrefab = Resources.Load<GameObject>("2D Pixel Spaceship - Two Small Ships/Prefabs/fireballs/fireball-red-tail-med.prefab");
@@ -144,7 +144,7 @@ public class GameController : MonoBehaviour
                 m_RivalPrefab = rivalPrefabs[0];
                 
                 GameObject newRival = Instantiate(m_RivalPrefab);
-                m_player_to_prefab_skin.Add(playerName, newRival.GetComponent<SpriteRenderer>().sprite);
+                m_player_to_prefab_skin_id.Add(playerName, characterID);
 
                 MatchRival matchRival = new MatchRival(playerName, newRival, characterID);
                 this.m_Rivals.Add(playerName, matchRival);

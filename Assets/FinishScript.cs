@@ -8,21 +8,27 @@ public class FinishScript : MonoBehaviour
 {
     [SerializeField]
     public List<FinishCharacterScript> go_characters;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    public List<Sprite> go_sprite;
+
+    private Dictionary<string, int> instanceMFinishPlayers;
+    private Dictionary<string, int> player_to_prefab;
+
+    private void Start()
     {
-        var instanceMFinishPlayers = GameController.Instance.m_finish_players;
-        Debug.Log(instanceMFinishPlayers);
-        Debug.Log(instanceMFinishPlayers.Count);
+        instanceMFinishPlayers = GameController.Instance.m_finish_players;
+        player_to_prefab = GameController.Instance.m_player_to_prefab_skin_id;
+    }
+
+    public void Update()
+    {
         List<string> position_players = instanceMFinishPlayers // max 4 cells
             .OrderBy(pair => pair.Value)  // Order the dictionary by value (index)
             .Select(pair => pair.Key)     // Select the keys (names)
             .ToList();
-        Debug.Log(position_players);
         for (var i = 0; i < position_players.Count; i++)
         {
-            Debug.Log(position_players[i]);
-            go_characters[i].setSkin(GameController.Instance.m_player_to_prefab_skin[position_players[i]]);
+            go_characters[i].setSkin(go_sprite[player_to_prefab[position_players[i]]]);
             go_characters[i].setUsername(position_players[i]);
             go_characters[i].gameObject.SetActive(true);
         }

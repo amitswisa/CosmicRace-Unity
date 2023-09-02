@@ -20,7 +20,6 @@ public sealed class MatchRival
         this.m_RivalCharacterDefinitions = this.m_rivalInstance.GetComponent<RivalCharacter>();
         this.m_rivalInstance.GetComponent<PlayerData>().playerName = m_Username;
         this.m_rivalInstance.GetComponent<PlayerData>()._selected_charecter = i_CharacterId;
-        this.m_rivalInstance.tag = "Player";
         
         this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId);
     }
@@ -86,7 +85,7 @@ public sealed class MatchRival
         }
     }
 
-    public void Attacked(PlayerCommand command)
+    public void AttackedByLighting(PlayerCommand command)
     {
         m_RivalMovement.AttackedByLighting(command.m_Location, 1.5f);
     }
