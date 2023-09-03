@@ -11,6 +11,7 @@ public class MatchManager : MonoBehaviour
         if(GameController.Instance.m_IsFriendMode)
         {
             DestroyPlayer();
+            DestroyCoins();
         }
         
         GameController.Instance.InitiateRivals();
@@ -31,6 +32,16 @@ public class MatchManager : MonoBehaviour
         if(player != null)
         {
             Destroy(player);
+        }
+    }
+
+    private void DestroyCoins()
+    {
+        GameObject coin = GameObject.FindWithTag("Coin");
+
+        if(coin != null)
+        {
+            Destroy(coin);
         }
     }
 }
