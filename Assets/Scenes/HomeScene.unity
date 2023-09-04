@@ -1795,7 +1795,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Custom Room
+  m_text: Friends Mode
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
@@ -2513,6 +2513,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usernameText: {fileID: 765992092339257661}
   coinsValue: {fileID: 765992092339257664}
+  progressBarImage: {fileID: 765992092339257666}
+  levelValue: {fileID: 765992092339257665}
 --- !u!114 &765992092339257664 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 765992091896566838, guid: 787a092304a736f4dae78befb2bdc417, type: 3}
@@ -2522,5 +2524,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &765992092339257665 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 765992091716761413, guid: 787a092304a736f4dae78befb2bdc417, type: 3}
+  m_PrefabInstance: {fileID: 765992092339257660}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &765992092339257666 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 765992091357432216, guid: 787a092304a736f4dae78befb2bdc417, type: 3}
+  m_PrefabInstance: {fileID: 765992092339257660}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

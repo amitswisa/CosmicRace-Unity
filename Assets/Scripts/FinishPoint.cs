@@ -21,6 +21,11 @@ public class FinishPoint : MonoBehaviour
             finishSound.Play();
             levelCompleted = true;
             
+            var player = col.gameObject;
+            PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+            playerMovement.setDirX(0);
+            playerMovement.UpdateAnimationState(new PlayerCommand(MessageType.COMMAND, null, PlayerAction.COMPLETE_LEVEL,null));
+            
             PlayerCommand completeLevelCommand
                         = new PlayerCommand(MessageType.COMMAND, User.getUsername()
                                 , PlayerAction.COMPLETE_LEVEL, new Location(col.gameObject.transform.position.x,

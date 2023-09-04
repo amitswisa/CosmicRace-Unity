@@ -6,19 +6,10 @@ using UnityEngine.UI;
 public class StartGameUpdating : MonoBehaviour
 {
     [SerializeField] Text UpdatePanel;
+    [SerializeField] Image selfImageProperty;
 
-    public void UpdatePanelText(string message)
+    void Start()
     {
-        if(message.Equals("CLEAR"))
-        {
-            UpdatePanel.text = "";
-        }
-        else
-        {
-            if(UpdatePanel.text != "")
-                UpdatePanel.text += "\n";
-
-            UpdatePanel.text += message;
-        }
+        GameController.Instance.AddUpdateViewListener(UpdatePanel);
     }
 }

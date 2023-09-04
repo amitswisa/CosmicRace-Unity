@@ -6,8 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static PlayerCommand;
 
 public class GameClient : IDisposable
@@ -22,14 +24,18 @@ public class GameClient : IDisposable
     private bool IsConnected => socket != null && socket.Connected;
     private Task processMessagesTask;
     private Task receiveDataTask;
+    private Text m_UpdatesTextObject; // Updates game status object for client.
 
     private GameClient()
     {
+
     }
 
     public static GameClient Instance { get; } = new GameClient();
+    public Action<string> OnPlayerJoined { get; internal set; }
+    public Action<string> OnPlayerLeft { get; internal set; }
 
-    public async Task Connect()
+    public async Task Connect(bool i_IsFiendMode)
     {
         if (IsConnected)
             return;
@@ -43,15 +49,19 @@ public class GameClient : IDisposable
 
             receiveBuffer = new byte[socket.ReceiveBufferSize];
             cancellationTokenSource = new CancellationTokenSource();
-
+            Console.WriteLine("Connecting to server...");
             await socket.ConnectAsync(Utils.GAME_SERVER_IP, Utils.GAME_SERVER_PORT);
-
+            Console.WriteLine("Connected to server");
             stream = socket.GetStream();
 
-            // Send JSON data after connecting
-            int characterId = PlayerPrefs.GetInt("SelectedCharacter", 0) + 1;
-            string jsonData = "{\"userid\": " + User.getUserId() + ", \"characterId\": " + characterId + "}\n";
-            await SendMessageToServer(jsonData);
+            if(i_IsFiendMode)
+            {
+                startFriendModeConnection();
+            }
+            else
+            {
+                startOnlineMatchConnection();
+            }
 
             // Start the message processor
             processMessagesTask = ProcessMessagesAsync();
@@ -61,8 +71,27 @@ public class GameClient : IDisposable
         {
             OKDialogManager.Instance.ShowDialog("Error", "Unexpected server connection failure occured.");
             Debug.LogError($"{e.Message}");
-            Dispose();
+            GameController.Instance.Disconnect();
         }
+    }
+
+    private async void startFriendModeConnection()
+    {
+        string gameType = "Offline";
+        string initGameDataJson = "{\"gameType\": " + gameType + "}\n";
+        await SendMessageToServer(initGameDataJson);
+    }
+
+    private async void startOnlineMatchConnection()
+    {
+        string gameType = "Online";
+        string initGameDataJson = "{\"gameType\": " + gameType + "}\n";
+        await SendMessageToServer(initGameDataJson);
+
+        // Send JSON data after connecting
+        int characterId = PlayerPrefs.GetInt("SelectedCharacter", 0) + 1;
+        string jsonData = "{\"userid\": " + User.getUserId() + ", \"characterId\": " + characterId + "}\n";
+        await SendMessageToServer(jsonData);
     }
 
     public async Task SendMessageToServer(string message)
@@ -86,7 +115,7 @@ public class GameClient : IDisposable
             {   
                 OKDialogManager.Instance.ShowDialog("Error", "Unexpected error was occured.");
                 Debug.LogError($"Error while writing to stream: {ex.Message}");
-                Dispose();
+                GameController.Instance.Disconnect();
             }
         }
     }
@@ -151,7 +180,7 @@ public class GameClient : IDisposable
         }
         catch (Exception e)
         {
-            //Debug.LogError($"Error while handling message: {e.Message}");
+            Debug.LogError($"Error while handling message: {e.Message}");
         }
     }
 
@@ -171,23 +200,26 @@ public class GameClient : IDisposable
                 else if (content.Trim().Equals("READY?"))
                 {
                     await SendMessageToServer("READY\n");
-                    Debug.Log("Server is ready to start the game");
+                    this.UpdateTextObject("Server is ready to start the game");
                 }
                 break;
 
             case "NOTIFICATION":
+                this.UpdateTextObject(content);
                 Debug.Log(content);
                 break;
 
             case "ACTION":
                 if (content.Trim().Equals("START"))
                 {
+                    UpdateTextObject("Starting Game...");
                     Debug.Log("Starting Game...");
+                    
                     await Task.Delay(1000); // Delay before scene transition
                     await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
                         GameController.Instance.SetMatchStarted();
-                        SceneManager.LoadSceneAsync("MainScene", LoadSceneMode.Single);
+                        SceneManager.LoadSceneAsync("MatchScene", LoadSceneMode.Single);
                     });
                 }
                 break;
@@ -201,11 +233,44 @@ public class GameClient : IDisposable
                 GameController.Instance.Disconnect(content);
                 break;
 
+            case PlayerAction.COMPLETE_LEVEL:
+                Debug.Log("COMPLETE_LEVEL");
+                Debug.Log(content);
+                JObject completeLevelJson = JObject.Parse(content);
+                
+                // Extract Username and Poisition keys from content
+                string finishedPlayerName = (string)completeLevelJson["Username"];
+                int finishedPlayerPosition = (int)completeLevelJson["Position"];
+                
+                GameController.Instance.m_finish_players.Add(finishedPlayerName, finishedPlayerPosition);
+
+                Debug.Log("" + finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
+                break;
+
             case "COMPLETE_MATCH":
+                Debug.Log("COMPLETE_MATCH");
+                Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
+                        /// TODO go to finish scene
+                        SceneManager.LoadScene("FinishScene", LoadSceneMode.Single);
                         OKDialogManager.Instance.ShowDialog("Match Finish!", content);
                     });
+                break;
+
+            case "ROOM_CREATED":
+                GameController.Instance.SetMatchIdentifier(content);
+                Debug.Log("Room created: " + content);
+                
+                await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
+                    {
+                        SceneManager.LoadSceneAsync("FriendModeWaitingScene", LoadSceneMode.Single);
+                    });
+                break;
+
+            case "PLAYER_JOINED":
+                Debug.Log("Player joined: " + content);
+                OnPlayerJoined?.Invoke(content);
                 break;
 
             case "MATCH_ENDED":
@@ -216,6 +281,7 @@ public class GameClient : IDisposable
 
     private void HandlePlayerCommand(string command)
     {
+        
         PlayerCommand playerCommand = JsonConvert.DeserializeObject<PlayerCommand>(command);
 
         switch (playerCommand.m_Action)
@@ -235,7 +301,27 @@ public class GameClient : IDisposable
             case PlayerAction.IDLE:
                 GameController.Instance.m_Rivals[playerCommand.m_Username].StopMoving(playerCommand);
                 break;
-            
+            case PlayerAction.ATTACK:
+                // TODO
+                if (playerCommand.m_AttackInfo != null
+                         && playerCommand.m_AttackInfo.m_AttackerName != null
+                                && playerCommand.m_AttackInfo.m_Victim != null)
+                {
+                    AttackInfo attackInfo = playerCommand.m_AttackInfo;
+                    if (attackInfo.m_Victim != User.getUsername())
+                    {
+                        GameController.Instance.m_Rivals[attackInfo.m_Victim].AttackedByLighting(playerCommand);
+                    }
+                    else
+                    {
+                        GameObject player = GameObject.FindWithTag("Player");
+                        player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
+                    }
+                }
+
+                Debug.Log("GameClient.cs: " + "Attack - command: " + command);
+                break;
+
             case PlayerAction.UPDATE_LOCATION:
                 GameController.Instance.m_Rivals[playerCommand.m_Username].PositionCorrection(playerCommand);
                 break;
@@ -245,9 +331,18 @@ public class GameClient : IDisposable
                 break;
 
             case PlayerAction.RIVAL_QUIT:
-                GameController.Instance.m_Rivals[playerCommand.m_Username].Quit(playerCommand);
-                break;
+                Debug.Log(playerCommand.m_Username + "quited the match.");
+                
+                if(GameController.Instance.m_IsMatchStarted)
+                    GameController.Instance.m_Rivals[playerCommand.m_Username].Quit(playerCommand);
+                
+                if(GameController.Instance.m_IsFriendMode && !GameController.Instance.m_IsMatchStarted)
+                    OnPlayerLeft?.Invoke(playerCommand.m_Username);
 
+                break;
+            case PlayerAction.COMPLETE_LEVEL: // check maybe COMPLETE_MATCH (see server)
+                Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action +" was complete the level");
+                break;
             default:
                 Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action);
                 break;
@@ -279,6 +374,22 @@ public class GameClient : IDisposable
 
         processMessagesTask = null;
         receiveDataTask = null;
+    }
+
+    public bool IsConnectionAlive()
+    {
+        return this.IsConnected;
+    }
+
+    public void AddUpdateViewListener(Text o_UpdateObject)
+    {
+        this.m_UpdatesTextObject = o_UpdateObject;
+    }
+
+    private void UpdateTextObject(string i_Text)
+    {
+        if(this.m_UpdatesTextObject != null)
+            this.m_UpdatesTextObject.text = i_Text;
     }
 
     public void Disconnect()

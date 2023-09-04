@@ -11,7 +11,6 @@ public sealed class MatchRival
     private RivalCharacter m_RivalCharacterDefinitions;
     public MatchRival(string i_Username, GameObject i_Object, int i_CharacterId)
     {
-        Debug.Log("Rival name:" + i_Username);
         this.m_Username = i_Username;
         this.m_rivalInstance = i_Object;
         this.mCharacterId = i_CharacterId;
@@ -66,6 +65,11 @@ public sealed class MatchRival
 
     public void PositionCorrection(PlayerCommand playerCommand)
     {
+        if(GameController.Instance.m_IsFriendMode)
+        {
+            return;
+        }
+
         float getInstancePositionX = this.m_Position.position.x;
         float getInstancePositionY = this.m_Position.position.y;
 
@@ -81,9 +85,8 @@ public sealed class MatchRival
         }
     }
 
-    public Location GetPlayerLocation()
+    public void AttackedByLighting(PlayerCommand command)
     {
-        Location location = new Location(m_Position.position.x, m_Position.position.y);
-        return location;
+        m_RivalMovement.AttackedByLighting(command.m_Location, 1.5f);
     }
 }

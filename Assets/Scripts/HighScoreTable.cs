@@ -18,12 +18,12 @@ public class HighScoreTable : MonoBehaviour
         entryTemplate.gameObject.SetActive(false);
         HighScoreEntriesList = new List<HighScoreEntry>()
         {
-            new HighScoreEntry { timer = 23.23456f, name = "Dvir" },
-            new HighScoreEntry { timer = 27.27566f, name = "Raz" },
-            new HighScoreEntry { timer = 34.34f, name = "Or" },
-            new HighScoreEntry { timer = 17.43728f, name = "Sonny" },
-            new HighScoreEntry { timer = 30.23456f, name = "Geula" },
-            new HighScoreEntry { timer = 31.23456f, name = "Amit" },
+            //new HighScoreEntry { timer = 23.23456f, name = "Dvir" },
+            //new HighScoreEntry { timer = 27.27566f, name = "Raz" },
+            //new HighScoreEntry { timer = 34.34f, name = "Or" },
+            //new HighScoreEntry { timer = 17.43728f, name = "Sonny" },
+            //new HighScoreEntry { timer = 30.23456f, name = "Geula" },
+            //new HighScoreEntry { timer = 31.23456f, name = "Amit" },
         };
 
         for (int i = 0; i < HighScoreEntriesList.Count; i++)
