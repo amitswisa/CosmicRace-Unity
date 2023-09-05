@@ -33,4 +33,9 @@ public class FinishScript : MonoBehaviour
             go_characters[i].gameObject.SetActive(true);
         }
     }
+
+    public void OnDestroy()
+    {
+        GameController.Instance.m_player_to_prefab_skin_id.Clear();
+    }
 }

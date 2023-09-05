@@ -47,7 +47,24 @@ public class GameController : MonoBehaviour
             return instance;
         }
     }
-    
+
+    public static void ClearInstance()
+    {
+        Instance.resetGameControllerSettings();
+        Instance.m_MatchIdentifier = "";
+        Instance.RivalsData = null;
+        Instance.m_IsMatchStarted = false;
+        Instance.m_IsGameRunning = false;
+        Instance.m_IsPlayerFinished = false;
+        Instance.m_IsFriendMode = false;
+        Instance.m_Rivals = null;
+        Instance.m_RivalPrefab = null;
+        Instance.m_projectiles = null;
+
+        Instance.m_finish_players = new Dictionary<string, int>();
+        Instance.m_player_to_prefab_skin_id = new Dictionary<string, int>();
+    }
+
     private void Awake()
     {
         // Ensure only one instance exists

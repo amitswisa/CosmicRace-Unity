@@ -31,9 +31,14 @@ public class GameClient : IDisposable
 
     }
 
-    public static GameClient Instance { get; } = new GameClient();
+    public static GameClient Instance { get; private set; } = new GameClient();
     public Action<string> OnPlayerJoined { get; internal set; }
     public Action<string> OnPlayerLeft { get; internal set; }
+
+    public static void ClearInstance()
+    {
+        Instance = new GameClient();
+    }
 
     public async Task Connect(bool i_IsFiendMode)
     {

@@ -73,6 +73,8 @@ public class CharacterSelector : MonoBehaviour
 
     public void StartGame()
     {
+        GameClient.ClearInstance();
+        GameController.ClearInstance();
         modifyButtonsInteractivity(false);
         GameController.Instance.m_player_to_prefab_skin_id.Add(User.getUsername(), selectedCharacter);
         GameController.Instance.Connect();
