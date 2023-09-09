@@ -31,8 +31,8 @@ public class RivalMovement : MonoBehaviour
     private float desiredHorizontalInput = 0f;
     private bool m_MovementLock = false;
     public GameObject lighteningAttack;
+    private Transform respawnPoint = null;
 
-    
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +50,8 @@ public class RivalMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameController.Instance.m_IsGameRunning) return;
+        if (!GameController.Instance.m_IsGameRunning
+            || this.m_MovementLock) return;
         if(m_MovementLock) return;
         
         _dirX = desiredHorizontalInput;
@@ -188,6 +189,28 @@ public class RivalMovement : MonoBehaviour
         _animator.SetTrigger("death");
         
     }
+    
+    public void OnCollisionEnter2D(Collision2D col)
+    {
+        if (GameController.Instance.m_IsFriendMode && col.gameObject.CompareTag("Trap"))
+        {
+            _rigidbody2D.bodyType = RigidbodyType2D.Static;
+            ResetIsSpecialPowerOn();
+            
+            respawnPoint = col.gameObject.GetComponent<TrapData>().respawnPoint;
+
+            GetComponentInChildren<TextMeshPro>().SetText("");
+
+            TriggerDeath(new Location(0, 0));
+
+            GetComponent<Transform>().transform.position = respawnPoint.position;
+
+            respawnPoint = null;
+            
+            Debug.Log("for user: "+ User.getUsername()+"the for player is Name: "+  GetComponentInChildren<TextMeshPro>().text);
+        }
+    }
+
     public void RestartLevel()
     {        
         _animator.ResetTrigger("death");

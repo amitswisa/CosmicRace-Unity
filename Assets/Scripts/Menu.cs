@@ -9,15 +9,10 @@ public class Menu : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] Button charactersScene;
     [SerializeField] Button exitBtn;
-    [SerializeField] Button matchesHistoryBtn;
 
     void Start() {
         charactersScene.onClick.AddListener(() => {
             SceneManager.LoadScene("HomeCharactersScene");
-        });
-
-        matchesHistoryBtn.onClick.AddListener(() => {
-            SceneManager.LoadScene("MatchesHistoryScene");
         });
 
         exitBtn.onClick.AddListener(Logout);

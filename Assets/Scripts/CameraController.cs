@@ -24,7 +24,9 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        if (gameController.m_IsFriendMode)
+        if (gameController.m_IsFriendMode 
+            && gameController.m_IsGameRunning
+                && gameController.m_Rivals.Count > 1)
         {
             // Find two most distant players
             float maxDistance = 0;
@@ -54,7 +56,8 @@ public class CameraController : MonoBehaviour
             averagePosition.z = transform.position.z;
             transform.position = averagePosition;
         }
-        else
+        
+        if(!gameController.m_IsFriendMode && gameController.m_IsGameRunning)
         {
             // Follow player
             transform.position = new Vector3(player.position.x, player.position.y, transform.position.z);

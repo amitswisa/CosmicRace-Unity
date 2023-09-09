@@ -186,6 +186,9 @@ public class GameClient : IDisposable
         catch (Exception e)
         {
             Debug.LogError($"Error while handling message: {e.Message}");
+            // TODO - maybe delete.
+            OKDialogManager.Instance.ShowDialog("Error", "Unexpected error was occured.");
+            GameController.Instance.Disconnect();
         }
     }
 
@@ -339,7 +342,10 @@ public class GameClient : IDisposable
                 Debug.Log(playerCommand.m_Username + "quited the match.");
                 
                 if(GameController.Instance.m_IsMatchStarted)
+                {
                     GameController.Instance.m_Rivals[playerCommand.m_Username].Quit(playerCommand);
+                    GameController.Instance.m_Rivals.Remove(playerCommand.m_Username);
+                }
                 
                 if(GameController.Instance.m_IsFriendMode && !GameController.Instance.m_IsMatchStarted)
                     OnPlayerLeft?.Invoke(playerCommand.m_Username);

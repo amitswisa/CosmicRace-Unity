@@ -340,4 +340,5 @@ public class GameController : MonoBehaviour
     {
         GameClient.Instance.AddUpdateViewListener(o_UpdateOject);
     }
+
 }

@@ -20,8 +20,18 @@ public sealed class MatchRival
         this.m_RivalCharacterDefinitions = this.m_rivalInstance.GetComponent<RivalCharacter>();
         this.m_rivalInstance.GetComponent<PlayerData>().playerName = m_Username;
         this.m_rivalInstance.GetComponent<PlayerData>()._selected_charecter = i_CharacterId;
+
+        if(GameController.Instance.m_IsFriendMode)
+        {
+            this.m_rivalInstance.layer = LayerMask.NameToLayer("Character");
+        }
+        else
+        {
+            this.m_rivalInstance.layer = LayerMask.NameToLayer("Rival");
+        }
         
         this.m_RivalCharacterDefinitions.SetCharacter(i_CharacterId);
+        
     }
 
     public void PerformJump(PlayerCommand command)
