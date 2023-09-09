@@ -185,8 +185,8 @@ public class GameClient : IDisposable
         }
         catch (Exception e)
         {
+            Debug.Log(message);
             Debug.LogError($"Error while handling message: {e.Message}");
-            // TODO - maybe delete.
             OKDialogManager.Instance.ShowDialog("Error", "Unexpected error was occured.");
             GameController.Instance.Disconnect();
         }
@@ -252,7 +252,6 @@ public class GameClient : IDisposable
                 
                 GameController.Instance.m_finish_players.Add(finishedPlayerName, finishedPlayerPosition);
 
-                //Debug.Log("" + finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
                 GameController.Instance.NotificationEnqueue(finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
                 
                 break;
@@ -329,7 +328,6 @@ public class GameClient : IDisposable
                     }
                 }
 
-                Debug.Log("GameClient.cs: " + "Attack - command: " + command);
                 break;
 
             case PlayerAction.UPDATE_LOCATION:

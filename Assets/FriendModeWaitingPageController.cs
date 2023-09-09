@@ -43,9 +43,16 @@ public class FriendModeWaitingPageController : MonoBehaviour
         backBtn.GetComponent<Button>().onClick.AddListener(cancelMatchRoom);
     }
 
+    private void OnDestroy()
+    {
+        GameClient.Instance.OnPlayerJoined -= AddWaitingPlayer;
+        GameClient.Instance.OnPlayerLeft -= RemoveWaitingPlayer;
+    }
+
     // Call this function whenever the list changes
     public void UpdateListDisplay()
     {
+        if (waitingText == null || contentPanel == null) return;
         // Check if the list is empty.
         if (m_WaitingPlayers.Count == 0)
         {
@@ -88,12 +95,16 @@ public class FriendModeWaitingPageController : MonoBehaviour
 
     public void AddWaitingPlayer(string playerName)
     {
+        if (this == null || gameObject == null) return;
+        
         this.m_WaitingPlayers.Add(playerName);
         UpdateListDisplay();
     }
 
     public void RemoveWaitingPlayer(string playerName)
     {
+        if (this == null || gameObject == null) return;
+
         this.m_WaitingPlayers.Remove(playerName);
         UpdateListDisplay();
     }

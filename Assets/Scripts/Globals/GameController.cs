@@ -200,16 +200,19 @@ public class GameController : MonoBehaviour
     {
         GameClient.Instance.Disconnect();
 
-        UnityMainThreadDispatcher.Instance.EnqueueAsync(() => {
-            SceneManager.LoadScene("HomeScene", LoadSceneMode.Single);
+        if(!i_Message.Equals("new"))
+        {
+            UnityMainThreadDispatcher.Instance.EnqueueAsync(() => {
+                SceneManager.LoadScene("HomeScene", LoadSceneMode.Single);
 
-            if(this.m_IsQuit) 
-            {
-                OKDialogManager.Instance.ShowDialog("Match Quit", i_Message);
-            }
-            else
-                OKDialogManager.Instance.ShowDialog("Match Terminated", i_Message);
-        });
+                if(this.m_IsQuit) 
+                {
+                    OKDialogManager.Instance.ShowDialog("Match Quit", i_Message);
+                }
+                else
+                    OKDialogManager.Instance.ShowDialog("Match Terminated", i_Message);
+            });
+        }
 
         resetGameControllerSettings();
     }
@@ -266,7 +269,24 @@ public class GameController : MonoBehaviour
 
     public void EliminateRival(string rivalName)
     {
-        // GameController.Instance.m_Rivals.Remove(playerUsername);
+        if(m_Rivals.ContainsKey(rivalName) 
+            && m_Rivals[rivalName].m_rivalInstance != null
+                && m_Rivals[rivalName].isEliminated == false)
+        {
+            NotificationEnqueue(rivalName + " has been eliminated!");
+
+            PlayerCommand eliminationMessage
+            = new PlayerCommand(MessageType.COMMAND, rivalName
+                    , PlayerAction.ELIMINATION, new Location(0,0));
+
+            SendMessageToServer(eliminationMessage.ToJson()+"\n");
+        }
+        else
+        {
+            Debug.Log("Rival not found");
+        }
+        
+        
     }
 
 }

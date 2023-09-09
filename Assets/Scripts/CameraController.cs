@@ -6,18 +6,16 @@ public class CameraController : MonoBehaviour
 {
     public float zoomSpeed = 1;
     public float minZoom = 8;
-    public float maxZoom = 50;  // Adjust if needed
-    public float safetyMargin = 2.0f;  // Additional margin to ensure all players are inside camera view
-    public float zoomFactor = 0.5f;  // This is a new addition, adjust for zoom scale
+    public float maxZoom = 80; 
+    public float safetyMargin = 2.0f;
+    public float zoomFactor = 0.5f;
 
     [SerializeField] private Transform player;
 
     private GameController gameController;
     private float targetZoom;
     private Camera cam;
-    private float eliminationMargin = 2.0f;  // A margin beyond the camera view to eliminate a player
-    private float warningTime = 3.0f;  // Time given for a player to come back into the view before elimination
-
+    private float eliminationMargin = 1.0f;
 
     private void Start()
     {
@@ -30,24 +28,22 @@ public class CameraController : MonoBehaviour
     {
         if (gameController.m_IsFriendMode && gameController.m_IsGameRunning && gameController.m_Rivals.Count > 1)
         {
-            CheckForElimination();
-
-            float maxDistance = 0;
-            foreach (var p1 in gameController.m_Rivals)
+            Transform firstPlayerTransform = DetermineFirstPlayer().Value.m_rivalInstance.transform;
+            
+            // Calculate max distance from the first player to all other players
+            float maxDistanceFromFirstPlayer = 0;
+            foreach (var p in gameController.m_Rivals)
             {
-                foreach (var p2 in gameController.m_Rivals)
-                {
-                    float distance = Vector3.Distance(p1.Value.m_rivalInstance.transform.position, p2.Value.m_rivalInstance.transform.position);
-                    if (distance > maxDistance)
-                        maxDistance = distance;
-                }
+                float distance = Vector3.Distance(firstPlayerTransform.position, p.Value.m_rivalInstance.transform.position);
+                if (distance > maxDistanceFromFirstPlayer)
+                    maxDistanceFromFirstPlayer = distance;
             }
 
-            targetZoom = maxDistance * zoomFactor + safetyMargin;
+            targetZoom = maxDistanceFromFirstPlayer * zoomFactor + safetyMargin;
             targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
             cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetZoom, Time.deltaTime * zoomSpeed);
 
-            // Adjust camera position to be centered between all players
+            // Adjust camera position to be a blend between average position and the first player's position
             Vector3 averagePosition = Vector3.zero;
             int count = 0;
             foreach (var rival in gameController.m_Rivals)
@@ -56,22 +52,25 @@ public class CameraController : MonoBehaviour
                 count++;
             }
             averagePosition /= count;
-            averagePosition.z = transform.position.z;
-            transform.position = averagePosition;
+            Vector3 focusPosition = Vector3.Lerp(firstPlayerTransform.position, averagePosition, 0.5f);  // 0.5f gives equal weight to the first player and the average position
+            focusPosition.z = transform.position.z;
+            transform.position = focusPosition;
+
+            CheckForElimination();
         }
-        else if(!gameController.m_IsFriendMode && gameController.m_IsGameRunning)
+        else if (!gameController.m_IsFriendMode && gameController.m_IsGameRunning)
         {
-            // Follow single player
             transform.position = new Vector3(player.position.x, player.position.y, transform.position.z);
         }
     }
+
 
     void CheckForElimination()
     {
         float leftBound = transform.position.x - cam.orthographicSize * cam.aspect - eliminationMargin;
         float rightBound = transform.position.x + cam.orthographicSize * cam.aspect + eliminationMargin;
 
-        KeyValuePair<string, MatchRival> lastPlayer = DetermineLastPlayer(); // Assuming Rival is the type of m_Rivals values
+        KeyValuePair<string, MatchRival> lastPlayer = DetermineLastPlayer();
 
         if (lastPlayer.Value == null)
             return;
@@ -80,8 +79,25 @@ public class CameraController : MonoBehaviour
 
         if (lastPlayerTransform.position.x < leftBound || lastPlayerTransform.position.x > rightBound)
         {
-            EliminatePlayer(lastPlayer.Key);
+            EliminateRival(lastPlayer.Key);
         }
+    }
+
+    KeyValuePair<string, MatchRival> DetermineFirstPlayer()
+    {
+        float maxX = float.MinValue;
+        KeyValuePair<string, MatchRival> firstPlayer = new KeyValuePair<string, MatchRival>();
+
+        foreach (var rival in gameController.m_Rivals)
+        {
+            if (rival.Value.m_rivalInstance.transform.position.x > maxX)
+            {
+                maxX = rival.Value.m_rivalInstance.transform.position.x;
+                firstPlayer = rival;
+            }
+        }
+
+        return firstPlayer;
     }
 
     KeyValuePair<string, MatchRival> DetermineLastPlayer()
@@ -101,8 +117,8 @@ public class CameraController : MonoBehaviour
         return lastPlayer;
     }
 
-    void EliminatePlayer(string playerUsername)
+    void EliminateRival(string playerUsername)
     {
-        GameController.Instance.m_Rivals[playerUsername].EliminateRival(playerUsername);
+        GameController.Instance.EliminateRival(playerUsername);
     }
 }

@@ -8,6 +8,7 @@ public class FriendModePageController : MonoBehaviour
 {
     public void onCreateRoomBtnClicked()
     {
+        GameController.Instance.Disconnect("new");
         GameController.Instance.ConnectInFriendMode();
     }
 }

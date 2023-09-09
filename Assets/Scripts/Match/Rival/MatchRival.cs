@@ -9,8 +9,10 @@ public sealed class MatchRival
     private RivalMovement m_RivalMovement;
     private Transform m_Position;
     private RivalCharacter m_RivalCharacterDefinitions;
+    public bool isEliminated {get; set;}
     public MatchRival(string i_Username, GameObject i_Object, int i_CharacterId)
     {
+        this.isEliminated = false;
         this.m_Username = i_Username;
         this.m_rivalInstance = i_Object;
         this.mCharacterId = i_CharacterId;

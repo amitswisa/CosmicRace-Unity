@@ -17,6 +17,7 @@ public sealed class PlayerCommand
         public const string RIVAL_QUIT = "RIVAL_QUIT";
         public const string COMPLETE_LEVEL = "COMPLETE_LEVEL";
         public const string QUIT = "QUIT";
+        public const string ELIMINATION = "ELIMINATION";
         public const string BULLET_CREATED = "BULLET_CREATED";
         public const string BULLET_UPDATED = "BULLET_UPDATED";
         public const string BULLET_COLLIED = "BULLET_COLLIDE";
