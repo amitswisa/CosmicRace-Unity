@@ -320,11 +320,4 @@ public class PlayerMovement : MonoBehaviour
         return gameObject.transform.position.y;
     }
     
-    public void DeathByProjectile(String bullet_id)
-    {
-        PlayerCommand currentCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername()
-            , PlayerCommand.PlayerAction.DEATH, new Location(transform.position.x, transform.position.y));
-        GameController.Instance.SendMessageToServer(currentCommand.ToJson()+"\n");
-        GameController.Instance.CollideBullet(bullet_id, User.getUsername());
-    }
 }

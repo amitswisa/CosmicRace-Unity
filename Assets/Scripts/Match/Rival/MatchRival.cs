@@ -63,7 +63,7 @@ public sealed class MatchRival
         m_RivalMovement.TriggerDeath(i_Location);
     }
 
-    public void Quit(PlayerCommand command) 
+    public void Quit(PlayerCommand command = null) 
     {
         // Instance still exists
         if(m_rivalInstance != null)
@@ -72,7 +72,7 @@ public sealed class MatchRival
             Debug.Log("Player " + this.m_Username + " has quit the match.");
         }
     }
-
+    //asdasd
     public void PositionCorrection(PlayerCommand playerCommand)
     {
         if(GameController.Instance.m_IsFriendMode)

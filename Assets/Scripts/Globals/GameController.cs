@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using Newtonsoft.Json.Linq;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using DefaultNamespace;
 using static PlayerCommand;
 
 public class GameController : MonoBehaviour
@@ -21,10 +20,9 @@ public class GameController : MonoBehaviour
     public Dictionary<string, MatchRival> m_Rivals {get; private set;}
     public GameObject[] rivalPrefabs;
     public GameObject projectilePrefab;
-    public Dictionary<string, Projectile> m_projectiles {get; private set;}
+    NotificationManager notificationManager;
     public Dictionary<string, int> m_finish_players {get; set;}
     public Dictionary<string, int> m_player_to_prefab_skin_id {get; set;}
-
     // public Dictionary<string, string> m_endMatch; // timestamp to character that end the match
     private static GameController instance; // Singleton instance
     public static GameController Instance // Public instance property
@@ -59,7 +57,6 @@ public class GameController : MonoBehaviour
         Instance.m_IsFriendMode = false;
         Instance.m_Rivals = null;
         Instance.m_RivalPrefab = null;
-        Instance.m_projectiles = null;
 
         Instance.m_finish_players = new Dictionary<string, int>();
         Instance.m_player_to_prefab_skin_id = new Dictionary<string, int>();
@@ -94,7 +91,6 @@ public class GameController : MonoBehaviour
         this.m_IsPlayerFinished = false;
         this.m_IsFriendMode = false;
         this.m_Rivals = null;
-        this.m_projectiles = null;
 
         m_finish_players = new Dictionary<string, int>();
         m_player_to_prefab_skin_id = new Dictionary<string, int>();
@@ -138,9 +134,6 @@ public class GameController : MonoBehaviour
         this.m_MatchIdentifier = (string) RivalsData["MatchIdentifier"];
 
         JObject playerList = (JObject)RivalsData["Players"];
-        
-        if(this.m_projectiles == null)
-            this.m_projectiles = new Dictionary<string, Projectile>();
 
         foreach (var player in playerList)
         {
@@ -167,6 +160,8 @@ public class GameController : MonoBehaviour
                 this.m_Rivals.Add(playerName, matchRival);
             }
         }
+
+        SetNotificationManager();
     }
 
     public void UpdateServerAfterCoinCollection()
@@ -181,6 +176,19 @@ public class GameController : MonoBehaviour
     public void SetMatchStarted()
     {
         this.m_IsMatchStarted = true;
+    }
+
+    private void SetNotificationManager()
+    {
+        notificationManager = FindObjectOfType<NotificationManager>();
+    }
+
+    public void NotificationEnqueue(string message)
+    {
+        if(notificationManager != null)
+        {
+            notificationManager.EnqueueMessage(message);
+        }
     }
 
     public void UpdateRivalesData(JObject i_RivalsData)
@@ -219,7 +227,6 @@ public class GameController : MonoBehaviour
         this.m_IsGameRunning = false;
         this.m_IsFriendMode = false;
         this.m_Rivals = null;
-        this.m_projectiles = null;
         this.m_IsQuit = false;
     }
 
@@ -250,95 +257,16 @@ public class GameController : MonoBehaviour
     internal string GetMatchIdentifier()
     {
         return this.m_MatchIdentifier;
-    }
-
-    public void NewBullet(string id, string username, Vector3 shotPointPosition, bool isToRight)
-    {
-        if (username == User.getUsername())
-        {
-            var bulletInfo = new BulletInfo
-            {
-                id = id,
-                owner = username,
-                position = shotPointPosition,
-                isToRight = isToRight,
-            };
-            var playerCommand = new PlayerCommand(MessageType.COMMAND, username,
-                PlayerAction.BULLET_CREATED, null, i_bulletInfo: bulletInfo);
-            GameClient.Instance.SendMessageToServer(JsonUtility.ToJson(playerCommand));
-        }
-        else
-        {
-            var rotation = Quaternion.Euler(0f, 0f, isToRight ? 0 : 180);
-            var p = Instantiate(projectilePrefab, shotPointPosition, rotation).GetComponent<Projectile>();
-            p.isRight = isToRight;
-            p.id = id;
-            p.owner = username;
-            m_projectiles.Add(p.id, p);
-        }
-    }
-    
-    public void UpdateBullet(string id, Vector3 bulletPosition)
-    {
-        if (m_projectiles[id].owner == User.getUsername())
-        {
-            var bulletInfo = new BulletInfo()
-            {
-                id = id,
-                position = bulletPosition,
-            };
-            var playerCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername(),
-                PlayerAction.BULLET_UPDATED, null, i_bulletInfo: bulletInfo);
-            GameClient.Instance.SendMessageToServer(JsonUtility.ToJson(playerCommand) + "\n");
-        }
-        else
-        {
-            m_projectiles[id].transform.position = bulletPosition;
-        }
-    }
-    
-    public void CollideBullet(string id, String rival_name)
-    {
-        var bulletInfo = new BulletInfo()
-        {
-            id = id,
-            rivalName = rival_name,
-        };
-        var playerCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername(),
-            PlayerAction.BULLET_COLLIED, null, i_bulletInfo: bulletInfo);
-        GameClient.Instance.SendMessageToServer(JsonUtility.ToJson(playerCommand)+"\n");
-    }
-    
-    public void DestroyBullet(string id)
-    {
-        if (m_projectiles[id].owner == User.getUsername())
-        {
-            var bulletInfo = new BulletInfo()
-            {
-                id = id,
-            };
-            var playerCommand = new PlayerCommand(MessageType.COMMAND, User.getUsername(),
-                PlayerAction.BULLET_DESTROY, null, i_bulletInfo: bulletInfo);
-            GameClient.Instance.SendMessageToServer(JsonUtility.ToJson(playerCommand) + "\n");
-        }
-        else
-        {
-            try
-            {
-                Destroy(m_projectiles[id]);
-            }
-            catch (Exception e)
-            {
-                // ignored
-            }
-
-            m_projectiles.Remove(id);
-        }
-    }
+    }    
 
     public void AddUpdateViewListener(Text o_UpdateOject)
     {
         GameClient.Instance.AddUpdateViewListener(o_UpdateOject);
+    }
+
+    public void EliminateRival(string rivalName)
+    {
+        // GameController.Instance.m_Rivals.Remove(playerUsername);
     }
 
 }

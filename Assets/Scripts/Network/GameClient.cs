@@ -226,8 +226,8 @@ public class GameClient : IDisposable
                     await Task.Delay(1000); // Delay before scene transition
                     await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
                     {
-                        GameController.Instance.SetMatchStarted();
                         SceneManager.LoadSceneAsync("MatchScene", LoadSceneMode.Single);
+                        GameController.Instance.SetMatchStarted();
                     });
                 }
                 break;
@@ -252,7 +252,9 @@ public class GameClient : IDisposable
                 
                 GameController.Instance.m_finish_players.Add(finishedPlayerName, finishedPlayerPosition);
 
-                Debug.Log("" + finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
+                //Debug.Log("" + finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
+                GameController.Instance.NotificationEnqueue(finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
+                
                 break;
 
             case "COMPLETE_MATCH":
@@ -339,7 +341,8 @@ public class GameClient : IDisposable
                 break;
 
             case PlayerAction.RIVAL_QUIT:
-                Debug.Log(playerCommand.m_Username + "quited the match.");
+
+                GameController.Instance.NotificationEnqueue(playerCommand.m_Username + "quited the match");
                 
                 if(GameController.Instance.m_IsMatchStarted)
                 {
@@ -352,7 +355,8 @@ public class GameClient : IDisposable
 
                 break;
             case PlayerAction.COMPLETE_LEVEL: // check maybe COMPLETE_MATCH (see server)
-                Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action +" was complete the level");
+                GameController.Instance.NotificationEnqueue(playerCommand.m_Username + " got to the final line");
+                //Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action +" was complete the level");
                 break;
             default:
                 Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action);
