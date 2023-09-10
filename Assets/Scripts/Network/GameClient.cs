@@ -249,6 +249,7 @@ public class GameClient : IDisposable
                 // Extract Username and Poisition keys from content
                 string finishedPlayerName = (string)completeLevelJson["Username"];
                 int finishedPlayerPosition = (int)completeLevelJson["Position"];
+                int coinsColl = (int)completeLevelJson["Coins"];
                 
                 // Check if key exists before.
                 if(GameController.Instance.m_finish_players.ContainsKey(finishedPlayerName))
@@ -257,6 +258,23 @@ public class GameClient : IDisposable
                 GameController.Instance.m_finish_players.Add(finishedPlayerName, finishedPlayerPosition);
 
                 GameController.Instance.NotificationEnqueue(finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
+
+                if(finishedPlayerName.Equals(User.getUsername()))
+                {
+                    User.updateCoinsAmount(coinsColl);
+
+                    int xpUpdateAmount = 0;
+                    
+                    if(finishedPlayerPosition == 1)
+                    {
+                        xpUpdateAmount = 10;
+                    } else if(finishedPlayerPosition == 2) {
+                        xpUpdateAmount = 5;
+                    }
+
+
+                    User.updateXp(xpUpdateAmount);
+                }
                 
                 break;
 
