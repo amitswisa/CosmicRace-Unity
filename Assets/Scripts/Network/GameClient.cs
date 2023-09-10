@@ -279,14 +279,13 @@ public class GameClient : IDisposable
                 break;
 
             case "COMPLETE_MATCH":
-                Debug.Log("COMPLETE_MATCH");
-                Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
-                    {
-                        /// TODO go to finish scene
-                        SceneManager.LoadScene("FinishScene", LoadSceneMode.Single);
-                        OKDialogManager.Instance.ShowDialog("Match Finish!", content);
-                    });
+                Debug.Log("COMPLETE_MATCH Occured.");
+                await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
+                {
+                    /// TODO go to finish scene
+                    SceneManager.LoadScene("FinishScene", LoadSceneMode.Single);
+                    OKDialogManager.Instance.ShowDialog("Match Finish!", content);
+                });
                 break;
 
             case "ROOM_CREATED":
