@@ -38,6 +38,20 @@ public static class User {
         return true;
     }
 
+    public static void updateXp(int xp)
+    {
+        float newXp = m_XP + xp;
+        if(newXp >= 100)
+        {
+            m_UserLevel++;
+            m_XP = 0;
+        }
+        else
+        {
+            m_XP = (int)newXp;
+        }
+    }
+
     public static void Logout() {
         m_Username = "";
         jwtoken = "";
