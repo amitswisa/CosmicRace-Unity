@@ -16,22 +16,45 @@ public class FinishPoint : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.CompareTag("Player") && !levelCompleted)
+        if (GameController.Instance.m_IsFriendMode)
         {
-            finishSound.Play();
-            levelCompleted = true;
-            
-            var player = col.gameObject;
-            PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
-            playerMovement.setDirX(0);
-            playerMovement.UpdateAnimationState(new PlayerCommand(MessageType.COMMAND, null, PlayerAction.COMPLETE_LEVEL,null));
-            
-            PlayerCommand completeLevelCommand
-                        = new PlayerCommand(MessageType.COMMAND, User.getUsername()
-                                , PlayerAction.COMPLETE_LEVEL, new Location(col.gameObject.transform.position.x,
-                                         col.gameObject.transform.position.y));
+            if (col.gameObject.CompareTag("Rival"))
+            {
+                finishSound.Play();
 
-            GameController.Instance.MatchCompleted(completeLevelCommand.ToJson()+"\n");
+                var rival = col.gameObject;
+                RivalMovement rivalMovement = rival.GetComponent<RivalMovement>();
+                PlayerData rivalData = rival.GetComponent<PlayerData>();
+                rivalMovement.setDirX(0);
+                rivalMovement.UpdateAnimationState();
+            
+                PlayerCommand completeLevelCommand
+                    = new PlayerCommand(MessageType.COMMAND, rivalData.playerName
+                        , PlayerAction.COMPLETE_LEVEL, new Location(col.gameObject.transform.position.x,
+                            col.gameObject.transform.position.y));
+
+                GameController.Instance.MatchCompleted(completeLevelCommand.ToJson()+"\n");
+            }
+        }
+        else
+        {
+            if (col.gameObject.CompareTag("Player") && !levelCompleted)
+            {
+                finishSound.Play();
+                levelCompleted = true;
+            
+                var player = col.gameObject;
+                PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+                playerMovement.setDirX(0);
+                playerMovement.UpdateAnimationState(new PlayerCommand(MessageType.COMMAND, null, PlayerAction.COMPLETE_LEVEL,null));
+            
+                PlayerCommand completeLevelCommand
+                    = new PlayerCommand(MessageType.COMMAND, User.getUsername()
+                        , PlayerAction.COMPLETE_LEVEL, new Location(col.gameObject.transform.position.x,
+                            col.gameObject.transform.position.y));
+
+                GameController.Instance.MatchCompleted(completeLevelCommand.ToJson()+"\n");
+            }
         }
     }
 }
