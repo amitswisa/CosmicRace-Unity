@@ -208,19 +208,19 @@ public class GameClient : IDisposable
                 else if (content.Trim().Equals("READY?"))
                 {
                     await SendMessageToServer("READY\n");
-                    this.UpdateTextObject("Server is ready to start the game");
+                    GameController.Instance.UpdateTextObject("Server is ready to start the game");
                 }
                 break;
 
             case "NOTIFICATION":
-                this.UpdateTextObject(content);
+                GameController.Instance.UpdateTextObject(content);
                 Debug.Log(content);
                 break;
 
             case "ACTION":
                 if (content.Trim().Equals("START"))
                 {
-                    UpdateTextObject("Starting Game...");
+                    GameController.Instance.UpdateTextObject("Starting Game...");
                     Debug.Log("Starting Game...");
                     
                     await Task.Delay(1000); // Delay before scene transition
@@ -412,19 +412,6 @@ public class GameClient : IDisposable
     public bool IsConnectionAlive()
     {
         return this.IsConnected;
-    }
-
-    public void AddUpdateViewListener(Text o_UpdateObject)
-    {
-        this.m_UpdatesTextObject = o_UpdateObject;
-    }
-
-    private void UpdateTextObject(string i_Text)
-    {
-        if(this.m_UpdatesTextObject != null)
-        {
-            this.m_UpdatesTextObject.text = i_Text;
-        }
     }
 
     public void Disconnect()
