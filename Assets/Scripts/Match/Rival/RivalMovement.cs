@@ -109,7 +109,12 @@ public class RivalMovement : MonoBehaviour
         isPoweUpOn = false;
     }
 
-    private void UpdateAnimationState()
+    public void setDirX(float dirX)
+    {
+        this._dirX = dirX;
+    }
+
+    public void UpdateAnimationState()
     {
         MovementState state;
         if (_dirX > 0f)
