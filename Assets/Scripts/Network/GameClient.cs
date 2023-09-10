@@ -24,7 +24,7 @@ public class GameClient : IDisposable
     private bool IsConnected => socket != null && socket.Connected;
     private Task processMessagesTask;
     private Task receiveDataTask;
-    private Text m_UpdatesTextObject; // Updates game status object for client.
+    private Text m_UpdatesTextObject;
 
     private GameClient()
     {
@@ -43,7 +43,7 @@ public class GameClient : IDisposable
     public async Task Connect(bool i_IsFiendMode)
     {
         if (IsConnected)
-            return;
+            this.Disconnect();
 
         try
         {
@@ -405,7 +405,9 @@ public class GameClient : IDisposable
     private void UpdateTextObject(string i_Text)
     {
         if(this.m_UpdatesTextObject != null)
+        {
             this.m_UpdatesTextObject.text = i_Text;
+        }
     }
 
     public void Disconnect()

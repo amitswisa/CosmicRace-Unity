@@ -73,7 +73,6 @@ public static class User {
 
     public static float getProgress()
     {
-        Debug.Log("XP: " + m_XP);
         return m_XP / 100f;
     }
 
@@ -86,26 +85,4 @@ public static class User {
     {
         return m_Characters;
     }
-    
-    // public static void updateUserData() {
-        
-    //     // Create the raw data to be sent in the request
-    //     var data = new { username = username };
-
-    //     // Send post request.
-    //     HttpRequest httpRequest = new HttpRequest("update-user-data");
-        
-    //     try {
-    //         JObject obj = httpRequest.post(data);
-
-    //         // Display the response data
-    //         coinsAmount = (int)obj["coins"];
-    //         wins = (int)obj["wins"];
-    //         loses = (int)obj["loses"];
-    //         Debug.Log("User data fatched!");
-    //     } catch(System.Net.WebException err) {
-    //          Debug.LogError(err.Message);
-    //     }
-
-    // }
 }

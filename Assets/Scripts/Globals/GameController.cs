@@ -84,17 +84,7 @@ public class GameController : MonoBehaviour
     
     void Start()
     {
-        this.m_MatchIdentifier = "";
-        this.RivalsData = null;
-        this.m_IsMatchStarted = false;
-        this.m_IsGameRunning = false;
-        this.m_IsPlayerFinished = false;
-        this.m_IsFriendMode = false;
-        this.m_Rivals = null;
-
-        m_finish_players = new Dictionary<string, int>();
-        m_player_to_prefab_skin_id = new Dictionary<string, int>();
-
+        ClearInstance();
        rivalPrefabs = Resources.LoadAll<GameObject>("Prefabs/Match/Rival");
        projectilePrefab = Resources.Load<GameObject>("2D Pixel Spaceship - Two Small Ships/Prefabs/fireballs/fireball-red-tail-med.prefab");
     }
