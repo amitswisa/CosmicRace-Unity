@@ -24,6 +24,7 @@ public static class User {
         jwtoken = (string) data["token"];
         m_UserLevel = (int)data["level"];
         m_Userid = (int)data["userid"];
+        m_XP = (int)data["xp"];
         m_UserCoins = (int) data["coins"];
         m_Characters = new List<Character>();
 
@@ -42,6 +43,7 @@ public static class User {
         jwtoken = "";
         m_UserLevel = 0;
         m_UserCoins = 0;
+        m_XP = 0;
         m_Characters.Clear();
     }
 
@@ -71,7 +73,8 @@ public static class User {
 
     public static float getProgress()
     {
-        return m_XP / 100;
+        Debug.Log("XP: " + m_XP);
+        return m_XP / 100f;
     }
 
     public static int getLevel()

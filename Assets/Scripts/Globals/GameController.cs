@@ -214,7 +214,7 @@ public class GameController : MonoBehaviour
             });
         }
 
-        resetGameControllerSettings();
+        ClearInstance();
     }
 
     public void EndMatch()

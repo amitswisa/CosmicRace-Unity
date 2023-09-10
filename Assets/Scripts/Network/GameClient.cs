@@ -250,6 +250,10 @@ public class GameClient : IDisposable
                 string finishedPlayerName = (string)completeLevelJson["Username"];
                 int finishedPlayerPosition = (int)completeLevelJson["Position"];
                 
+                // Check if key exists before.
+                if(GameController.Instance.m_finish_players.ContainsKey(finishedPlayerName))
+                    GameController.Instance.m_finish_players.Remove(finishedPlayerName);
+
                 GameController.Instance.m_finish_players.Add(finishedPlayerName, finishedPlayerPosition);
 
                 GameController.Instance.NotificationEnqueue(finishedPlayerName + " finished in #" + finishedPlayerPosition + " position!");
@@ -352,9 +356,8 @@ public class GameClient : IDisposable
                     OnPlayerLeft?.Invoke(playerCommand.m_Username);
 
                 break;
-            case PlayerAction.COMPLETE_LEVEL: // check maybe COMPLETE_MATCH (see server)
+            case PlayerAction.COMPLETE_LEVEL:
                 GameController.Instance.NotificationEnqueue(playerCommand.m_Username + " got to the final line");
-                //Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action +" was complete the level");
                 break;
             default:
                 Debug.Log("Player " + playerCommand.m_Username + " action: " + playerCommand.m_Action);

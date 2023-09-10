@@ -1186,7 +1186,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charactersScene: {fileID: 194974268}
   exitBtn: {fileID: 860456449}
-  matchesHistoryBtn: {fileID: 0}
 --- !u!1 &1043639086
 GameObject:
   m_ObjectHideFlags: 0
@@ -2099,6 +2098,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5.786174
       objectReference: {fileID: 0}
+    - target: {fileID: 765992091357432216, guid: 787a092304a736f4dae78befb2bdc417, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 765992091357432223, guid: 787a092304a736f4dae78befb2bdc417, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -2305,6 +2308,7 @@ MonoBehaviour:
   coinsValue: {fileID: 765992092339257664}
   progressBarImage: {fileID: 765992092339257666}
   levelValue: {fileID: 765992092339257665}
+  xpValue: {fileID: 765992092339257666}
 --- !u!114 &765992092339257664 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 765992091896566838, guid: 787a092304a736f4dae78befb2bdc417, type: 3}
