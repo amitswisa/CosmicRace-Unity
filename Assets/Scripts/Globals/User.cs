@@ -20,7 +20,7 @@ public static class User {
             return false;
 
         // Login verified
-        m_Username = username_g;
+        m_Username = username_g.ToLower();
         jwtoken = (string) data["token"];
         m_UserLevel = (int)data["level"];
         m_Userid = (int)data["userid"];
