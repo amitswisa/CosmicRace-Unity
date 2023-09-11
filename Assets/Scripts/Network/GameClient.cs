@@ -119,7 +119,7 @@ public class GameClient : IDisposable
             {   
                 OKDialogManager.Instance.ShowDialog("Error", "Unexpected error was occured.");
                 Debug.LogError($"Error while writing to stream: {ex.Message}");
-                GameController.Instance.Disconnect("Server is unavailable!");
+                GameController.Instance.Disconnect();
             }
         }
     }
