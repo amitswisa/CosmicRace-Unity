@@ -268,7 +268,7 @@ public class GameController : MonoBehaviour
     
     public void UpdateTextObject(string i_Text)
     {
-        if(this.m_OutputUpdateTextObject != null)
+        if(m_UpdateObject != null && this.m_OutputUpdateTextObject != null)
         {
             m_OutputUpdateTextObject.text = i_Text;
             m_UpdateObject.SetActive(true);

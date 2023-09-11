@@ -332,10 +332,9 @@ public class GameClient : IDisposable
                 GameController.Instance.m_Rivals[playerCommand.m_Username].StopMoving(playerCommand);
                 break;
             case PlayerAction.ATTACK:
-                // TODO
                 if (playerCommand.m_AttackInfo != null
-                         && playerCommand.m_AttackInfo.m_AttackerName != null
-                                && playerCommand.m_AttackInfo.m_Victim != null)
+                    && playerCommand.m_AttackInfo.m_AttackerName != null
+                    && playerCommand.m_AttackInfo.m_Victim != null)
                 {
                     AttackInfo attackInfo = playerCommand.m_AttackInfo;
                     if (attackInfo.m_Victim != User.getUsername())
@@ -347,6 +346,8 @@ public class GameClient : IDisposable
                         GameObject player = GameObject.FindWithTag("Player");
                         player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
                     }
+
+                    GameController.Instance.NotificationEnqueue(playerCommand.m_AttackInfo.m_AttackerName + " attacked " + playerCommand.m_AttackInfo.m_Victim + "!");
                 }
 
                 break;

@@ -17,9 +17,11 @@ public class FriendModeWaitingPageController : MonoBehaviour
     void Start()
     {
         VerticalLayoutGroup verticalLayout = contentPanel.gameObject.AddComponent<VerticalLayoutGroup>();
-        verticalLayout.childAlignment = TextAnchor.MiddleLeft; // Align children to the left
-        verticalLayout.childForceExpandHeight = true; // Force children to expand to the full height of the contentPanel
-        verticalLayout.childForceExpandWidth = true; // Do not force children to expand in width
+        verticalLayout.childAlignment = TextAnchor.UpperLeft; // Align children to the upper left
+        verticalLayout.childForceExpandHeight = false; // Don't force children to expand to the full height of the contentPanel
+        verticalLayout.childForceExpandWidth = true; // Do force children to expand in width (this remains unchanged)
+        verticalLayout.spacing = 5f; // No additional space between the items
+        verticalLayout.padding = new RectOffset(20, 20, 20, 20); // Left, Right, Top, Bottom
 
         ContentSizeFitter sizeFitter = contentPanel.gameObject.AddComponent<ContentSizeFitter>();
         sizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize; // Adjust width based on the content size
