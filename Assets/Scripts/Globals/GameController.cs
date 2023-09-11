@@ -302,8 +302,13 @@ public class GameController : MonoBehaviour
         {
             Debug.Log("Rival not found");
         }
-        
-        
+    }
+
+    public void OfflineMatch_NotifyBackToLife(string i_RivalName)
+    {
+        PlayerCommand disableDeathCommand 
+            = new PlayerCommand(MessageType.COMMAND, i_RivalName, PlayerAction.REVIVE, new Location(0,0));
+        SendMessageToServer(disableDeathCommand.ToJson()+"\n");
     }
 
 }

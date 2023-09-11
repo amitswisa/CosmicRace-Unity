@@ -18,11 +18,8 @@ public sealed class PlayerCommand
         public const string COMPLETE_LEVEL = "COMPLETE_LEVEL";
         public const string QUIT = "QUIT";
         public const string ELIMINATION = "ELIMINATION";
-        public const string BULLET_CREATED = "BULLET_CREATED";
-        public const string BULLET_UPDATED = "BULLET_UPDATED";
-        public const string BULLET_COLLIED = "BULLET_COLLIDE";
-        public const string BULLET_DESTROY = "BULLET_DESTROY";
-        
+        public const string REVIVE = "REVIVE";
+
     }
     
     public class BulletInfo

@@ -227,5 +227,8 @@ public class RivalMovement : MonoBehaviour
         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         _animator.Play("Idle", 0,0f);
         m_MovementLock = false;
+        
+        if(GameController.Instance.m_IsFriendMode)
+            GameController.Instance.OfflineMatch_NotifyBackToLife(rival_name);
     }
 }
