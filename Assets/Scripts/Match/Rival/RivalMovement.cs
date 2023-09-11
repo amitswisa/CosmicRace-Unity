@@ -32,6 +32,7 @@ public class RivalMovement : MonoBehaviour
     private bool m_MovementLock = false;
     public GameObject lighteningAttack;
     private Transform respawnPoint = null;
+    private string rival_name;
 
 
     // Start is called before the first frame update
@@ -43,7 +44,8 @@ public class RivalMovement : MonoBehaviour
         _boxCollider2D = GetComponent<BoxCollider2D>();
         _animator = gameObject.GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        GetComponentInChildren<TextMeshPro>().SetText(GetComponent<PlayerData>().playerName);
+        rival_name = GetComponent<PlayerData>().playerName;
+        GetComponentInChildren<TextMeshPro>().SetText(rival_name);
         SetLightingVisibility(false);
     }
 
@@ -53,7 +55,8 @@ public class RivalMovement : MonoBehaviour
         if (!GameController.Instance.m_IsGameRunning
             || this.m_MovementLock) return;
         if(m_MovementLock) return;
-        
+        if(GameController.Instance.m_Rivals[rival_name].isFinish) return;
+
         _dirX = desiredHorizontalInput;
         _rigidbody2D.velocity = new Vector2( _dirX * speed, _rigidbody2D.velocity.y);
         
