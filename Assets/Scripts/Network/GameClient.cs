@@ -412,7 +412,7 @@ public class GameClient : IDisposable
 
     public bool IsConnectionAlive()
     {
-        return this.IsConnected;
+        return IsConnected;
     }
 
     public void Disconnect()

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public sealed class MatchRival : MonoBehaviour
+public sealed class MatchRival
 {
     public string m_Username { get; private set; }
     public int mCharacterId { get; private set; }
