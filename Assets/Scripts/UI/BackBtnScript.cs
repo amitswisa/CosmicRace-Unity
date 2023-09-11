@@ -18,8 +18,8 @@ public class BackBtnScript : MonoBehaviour
     public void MyOnClickFunction()
     {
         if(GameClient.Instance != null && GameClient.Instance.IsConnectionAlive())
-            GameController.Instance.Disconnect("Connection to server closed!");
-        else 
-            SceneManager.LoadScene("HomeScene");
+            GameController.Instance.Disconnect("new");
+
+        SceneManager.LoadScene("HomeScene");
     }
 }
