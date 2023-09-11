@@ -337,7 +337,7 @@ public class GameClient : IDisposable
                     && playerCommand.m_AttackInfo.m_Victim != null)
                 {
                     AttackInfo attackInfo = playerCommand.m_AttackInfo;
-                    if (attackInfo.m_Victim != User.getUsername())
+                    if (!GameController.Instance.m_IsFriendMode || attackInfo.m_Victim != User.getUsername())
                     {
                         GameController.Instance.m_Rivals[attackInfo.m_Victim].AttackedByLighting(playerCommand);
                     }
