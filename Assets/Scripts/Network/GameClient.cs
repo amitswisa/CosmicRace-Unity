@@ -362,7 +362,7 @@ public class GameClient : IDisposable
 
             case PlayerAction.RIVAL_QUIT:
 
-                GameController.Instance.NotificationEnqueue(playerCommand.m_Username + "quited the match");
+                GameController.Instance.NotificationEnqueue(playerCommand.m_Username + " quited the match");
                 
                 if(GameController.Instance.m_IsMatchStarted)
                 {
