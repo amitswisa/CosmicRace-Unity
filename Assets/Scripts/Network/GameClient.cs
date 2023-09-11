@@ -208,19 +208,19 @@ public class GameClient : IDisposable
                 else if (content.Trim().Equals("READY?"))
                 {
                     await SendMessageToServer("READY\n");
-                    this.UpdateTextObject("Server is ready to start the game");
+                    GameController.Instance.UpdateTextObject("Server is ready to start the game");
                 }
                 break;
 
             case "NOTIFICATION":
-                this.UpdateTextObject(content);
+                GameController.Instance.UpdateTextObject(content);
                 Debug.Log(content);
                 break;
 
             case "ACTION":
                 if (content.Trim().Equals("START"))
                 {
-                    UpdateTextObject("Starting Game...");
+                    GameController.Instance.UpdateTextObject("Starting Game...");
                     Debug.Log("Starting Game...");
                     
                     await Task.Delay(1000); // Delay before scene transition
@@ -279,14 +279,13 @@ public class GameClient : IDisposable
                 break;
 
             case "COMPLETE_MATCH":
-                Debug.Log("COMPLETE_MATCH");
-                Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
-                    {
-                        /// TODO go to finish scene
-                        SceneManager.LoadScene("FinishScene", LoadSceneMode.Single);
-                        OKDialogManager.Instance.ShowDialog("Match Finish!", content);
-                    });
+                Debug.Log("COMPLETE_MATCH Occured.");
+                await UnityMainThreadDispatcher.Instance.EnqueueAsync(() =>
+                {
+                    /// TODO go to finish scene
+                    SceneManager.LoadScene("FinishScene", LoadSceneMode.Single);
+                    OKDialogManager.Instance.ShowDialog("Match Finish!", content);
+                });
                 break;
 
             case "ROOM_CREATED":
@@ -333,10 +332,9 @@ public class GameClient : IDisposable
                 GameController.Instance.m_Rivals[playerCommand.m_Username].StopMoving(playerCommand);
                 break;
             case PlayerAction.ATTACK:
-                // TODO
                 if (playerCommand.m_AttackInfo != null
-                         && playerCommand.m_AttackInfo.m_AttackerName != null
-                                && playerCommand.m_AttackInfo.m_Victim != null)
+                    && playerCommand.m_AttackInfo.m_AttackerName != null
+                    && playerCommand.m_AttackInfo.m_Victim != null)
                 {
                     AttackInfo attackInfo = playerCommand.m_AttackInfo;
                     if (attackInfo.m_Victim != User.getUsername())
@@ -348,6 +346,8 @@ public class GameClient : IDisposable
                         GameObject player = GameObject.FindWithTag("Player");
                         player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
                     }
+
+                    GameController.Instance.NotificationEnqueue(playerCommand.m_AttackInfo.m_AttackerName + " attacked " + playerCommand.m_AttackInfo.m_Victim + "!");
                 }
 
                 break;
@@ -413,19 +413,6 @@ public class GameClient : IDisposable
     public bool IsConnectionAlive()
     {
         return this.IsConnected;
-    }
-
-    public void AddUpdateViewListener(Text o_UpdateObject)
-    {
-        this.m_UpdatesTextObject = o_UpdateObject;
-    }
-
-    private void UpdateTextObject(string i_Text)
-    {
-        if(this.m_UpdatesTextObject != null)
-        {
-            this.m_UpdatesTextObject.text = i_Text;
-        }
     }
 
     public void Disconnect()

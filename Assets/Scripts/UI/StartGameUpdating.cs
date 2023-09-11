@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class StartGameUpdating : MonoBehaviour
 
     void Start()
     {
-        GameController.Instance.AddUpdateViewListener(UpdatePanel);
+        gameObject.SetActive(false);
+        GameController.Instance.AddUpdateViewListener(UpdatePanel, gameObject);
     }
 }

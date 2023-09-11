@@ -9,9 +9,17 @@ using static PlayerCommand;
 public class GameController : MonoBehaviour
 {
     public bool m_IsFriendMode {get; private set;}
+    
     private StartGameUpdating updatePanelScript;
+    
     private GameObject m_RivalPrefab;
+    
     private string m_MatchIdentifier;
+
+    // Both for updating text before online match scene.
+    private Text m_OutputUpdateTextObject;
+    private GameObject m_UpdateObject;
+    
     public bool m_IsGameRunning = false;
     public bool m_IsMatchStarted {get; private set;}
     public bool m_IsQuit {get; set;}
@@ -261,9 +269,19 @@ public class GameController : MonoBehaviour
         return this.m_MatchIdentifier;
     }    
 
-    public void AddUpdateViewListener(Text o_UpdateOject)
+    public void AddUpdateViewListener(Text o_UpdateTextObject, GameObject o_UpdateObject)
     {
-        GameClient.Instance.AddUpdateViewListener(o_UpdateOject);
+        this.m_OutputUpdateTextObject = o_UpdateTextObject;
+        this.m_UpdateObject = o_UpdateObject;
+    }
+    
+    public void UpdateTextObject(string i_Text)
+    {
+        if(m_UpdateObject != null && this.m_OutputUpdateTextObject != null)
+        {
+            m_OutputUpdateTextObject.text = i_Text;
+            m_UpdateObject.SetActive(true);
+        }
     }
 
     public void EliminateRival(string rivalName)
