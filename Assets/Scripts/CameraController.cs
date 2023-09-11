@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public float zoomSpeed = 2;
+    public float zoomSpeed = 1;
     public float minZoom = 8;
     public float maxZoom = 80; 
     public float safetyMargin = 2.0f;
@@ -96,7 +96,7 @@ public class CameraController : MonoBehaviour
                 firstPlayer = rival;
             }
         }
-
+        
         return firstPlayer;
     }
 
