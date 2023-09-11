@@ -54,7 +54,9 @@ public class RivalMovement : MonoBehaviour
     {
         if (!GameController.Instance.m_IsGameRunning
             || this.m_MovementLock) return;
+        
         if(m_MovementLock) return;
+        
         if(GameController.Instance.m_Rivals[rival_name].isFinish) return;
 
         _dirX = desiredHorizontalInput;

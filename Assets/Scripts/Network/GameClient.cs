@@ -74,9 +74,8 @@ public class GameClient : IDisposable
         }
         catch (Exception e)
         {
-            OKDialogManager.Instance.ShowDialog("Error", "Unexpected server connection failure occured.");
             Debug.LogError($"{e.Message}");
-            GameController.Instance.Disconnect();
+            GameController.Instance.Disconnect("Unexpected server connection failure occured.");
         }
     }
 
@@ -120,7 +119,7 @@ public class GameClient : IDisposable
             {   
                 OKDialogManager.Instance.ShowDialog("Error", "Unexpected error was occured.");
                 Debug.LogError($"Error while writing to stream: {ex.Message}");
-                GameController.Instance.Disconnect();
+                GameController.Instance.Disconnect("Server is unavailable!");
             }
         }
     }
@@ -185,10 +184,10 @@ public class GameClient : IDisposable
         }
         catch (Exception e)
         {
-            Debug.Log(message);
-            Debug.LogError($"Error while handling message: {e.Message}");
-            OKDialogManager.Instance.ShowDialog("Error", "Unexpected error was occured.");
-            GameController.Instance.Disconnect();
+            //Debug.Log(message);
+            Debug.LogError($"Error while handling message: {message}");
+            //OKDialogManager.Instance.ShowDialog("Error", "Unexpected error was occured.");
+            //GameController.Instance.Disconnect();
         }
     }
 
@@ -339,6 +338,9 @@ public class GameClient : IDisposable
                     AttackInfo attackInfo = playerCommand.m_AttackInfo;
                     if (attackInfo.m_Victim != User.getUsername())
                     {
+                        if(GameController.Instance.m_IsFriendMode)
+                            GameController.Instance.m_Rivals[playerCommand.m_AttackInfo.m_Victim].StopMoving(playerCommand);
+                        
                         GameController.Instance.m_Rivals[attackInfo.m_Victim].AttackedByLighting(playerCommand);
                     }
                     else
@@ -346,6 +348,7 @@ public class GameClient : IDisposable
                         GameObject player = GameObject.FindWithTag("Player");
                         player.GetComponent<PlayerMovement>().AttackedByLighting(1.5f);
                     }
+                    
 
                     GameController.Instance.NotificationEnqueue(playerCommand.m_AttackInfo.m_AttackerName + " attacked " + playerCommand.m_AttackInfo.m_Victim + "!");
                 }
@@ -357,6 +360,9 @@ public class GameClient : IDisposable
                 break;
 
             case PlayerAction.DEATH:
+                if(GameController.Instance.m_IsFriendMode)
+                    GameController.Instance.m_Rivals[playerCommand.m_Username].StopMoving(playerCommand);
+                
                 GameController.Instance.m_Rivals[playerCommand.m_Username].ActivateDeath(playerCommand.m_Location);
                 break;
 
