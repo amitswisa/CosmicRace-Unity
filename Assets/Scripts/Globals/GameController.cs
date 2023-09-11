@@ -247,6 +247,15 @@ public class GameController : MonoBehaviour
         GameClient.Instance.SendMessageToServer(i_MatchCompleteMessage);
     }
 
+    public void RivalCompletedMatch(string rivalCompleteMessage, string rival_name)
+    {
+        if (!m_Rivals[rival_name].isFinish)
+        {
+            m_Rivals[rival_name].SetFinish();
+            SendMessageToServer(rivalCompleteMessage);
+        }
+    }
+
     internal string GetMatchIdentifier()
     {
         return this.m_MatchIdentifier;

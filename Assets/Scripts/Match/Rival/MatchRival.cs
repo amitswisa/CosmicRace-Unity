@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public sealed class MatchRival
+public sealed class MatchRival : MonoBehaviour
 {
     public string m_Username { get; private set; }
     public int mCharacterId { get; private set; }
@@ -9,6 +9,7 @@ public sealed class MatchRival
     private RivalMovement m_RivalMovement;
     private Transform m_Position;
     private RivalCharacter m_RivalCharacterDefinitions;
+    public bool isFinish { get; private set; }
     public bool isEliminated {get; set;}
     public MatchRival(string i_Username, GameObject i_Object, int i_CharacterId)
     {
@@ -16,6 +17,7 @@ public sealed class MatchRival
         this.m_Username = i_Username;
         this.m_rivalInstance = i_Object;
         this.mCharacterId = i_CharacterId;
+        this.isFinish = false;
         
         this.m_Position = this.m_rivalInstance.GetComponent<Transform>();
         this.m_RivalMovement = this.m_rivalInstance.GetComponent<RivalMovement>();
@@ -75,6 +77,11 @@ public sealed class MatchRival
         }
     }
     //asdasd
+
+    public void SetFinish()
+    {
+        this.isFinish = true;
+    }
     public void PositionCorrection(PlayerCommand playerCommand)
     {
         if(GameController.Instance.m_IsFriendMode)

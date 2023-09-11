@@ -18,22 +18,22 @@ public class FinishPoint : MonoBehaviour
     {
         if (GameController.Instance.m_IsFriendMode)
         {
-            if (col.gameObject.CompareTag("Rival"))
+            Debug.Log("GameController.Instance.m_IsFriendMode");
+            if (col.gameObject.CompareTag("Rival") && !levelCompleted)
             {
+                Debug.Log("CompareTag - Rival");
                 finishSound.Play();
-
                 var rival = col.gameObject;
                 RivalMovement rivalMovement = rival.GetComponent<RivalMovement>();
                 PlayerData rivalData = rival.GetComponent<PlayerData>();
                 rivalMovement.setDirX(0);
                 rivalMovement.UpdateAnimationState();
-            
                 PlayerCommand completeLevelCommand
                     = new PlayerCommand(MessageType.COMMAND, rivalData.playerName
                         , PlayerAction.COMPLETE_LEVEL, new Location(col.gameObject.transform.position.x,
                             col.gameObject.transform.position.y));
-
-                GameController.Instance.MatchCompleted(completeLevelCommand.ToJson()+"\n");
+                Debug.Log("CompleteLevel - " + completeLevelCommand.ToJson());
+                GameController.Instance.RivalCompletedMatch(completeLevelCommand.ToJson()+"\n", rivalData.playerName);
             }
         }
         else
