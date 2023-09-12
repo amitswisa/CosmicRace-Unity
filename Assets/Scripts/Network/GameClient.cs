@@ -370,7 +370,7 @@ public class GameClient : IDisposable
 
                 GameController.Instance.NotificationEnqueue(playerCommand.m_Username + " quited the match");
                 
-                if(GameController.Instance.m_IsMatchStarted)
+                if(GameController.Instance.m_IsMatchStarted && GameController.Instance.m_Rivals.ContainsKey(playerCommand.m_Username))
                 {
                     GameController.Instance.m_Rivals[playerCommand.m_Username].Quit(playerCommand);
                     GameController.Instance.m_Rivals.Remove(playerCommand.m_Username);

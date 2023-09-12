@@ -296,6 +296,8 @@ public class GameController : MonoBehaviour
             = new PlayerCommand(MessageType.COMMAND, rivalName
                     , PlayerAction.ELIMINATION, new Location(0,0));
 
+            m_Rivals[rivalName].isEliminated = true;
+
             SendMessageToServer(eliminationMessage.ToJson()+"\n");
         }
         else
